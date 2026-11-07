@@ -1,0 +1,119 @@
+2
+30111222
+2
+jurado1@mail.com
+Ana Torres
++54 9 11 5555-1234
+Buenos Aires
+6
+UBA
+3
+v
+2
+27999888
+1
+mentor1@mail.com
+Luis Gomez
+11 4444 5555
+Cordoba
+10
+UNC
+3
+v
+2
+25555666
+1
+mentor2@mail.com
+Franco Ruiz
+351 555 0000
+Santa Fe
+4
+ITBA
+3
+v
+1
+36444555
+maria@mail.com
+Maria Lopez
+351 555 1234
+Santa Fe
+Desarrolladora
+Equipo Alpha
+3
+C Sharp
+v
+1
+38123456
+pablo@mail.com
+Pablo Diaz
+351 555 9876
+Mendoza
+Tester
+Equipo Beta
+3
+Python
+v
+1
+36444555
+v
+1
+31222333
+maria@mail.com
+v
+3
+SuitSense
+Analisis de zancada
+https://github.com/equipoalpha/suitsense
+3
+1
+v
+3
+StrideLab
+Sensor de planta
+https://github.com/equipobeta/stridelab
+3
+1
+v
+5
+v
+6
+30111222
+1
+8,5
+7,5
+9
+v
+7
+v
+6
+30111222
+1
+6
+6
+6
+v
+7
+v
+2
+29876543
+2
+jurado2@mail.com
+Sofia Diaz
+11 2222 3333
+Tucuman
+8
+CONICET
+3
+v
+6
+29876543
+1
+9
+9
+9
+v
+7
+v
+4
+v
+8

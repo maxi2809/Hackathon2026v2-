@@ -1,0 +1,13 @@
+# Cachés de Visual Studio
+.vs/
+
+# Salidas de compilación
+bin/
+obj/
+
+# Archivos generados durante las pruebas
+prueba-salida.txt
+
+# Fragmentos de prueba (quedó consolidado en prueba-completa.txt)
+prueba-ingreso.txt
+prueba-jurado2.txt
