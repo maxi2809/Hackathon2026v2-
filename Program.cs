@@ -560,35 +560,46 @@ namespace Hackathon2026
                 if (!Console.IsOutputRedirected)
                     Console.Clear();
 
-                switch (opcion)
+                try
                 {
-                    case 1:
-                        RegistrarCompetidor();
-                        break;
+                    switch (opcion)
+                    {
+                        case 1:
+                            RegistrarCompetidor();
+                            break;
 
-                    case 2:
-                        RegistrarMentor();
-                        break;
+                        case 2:
+                            RegistrarMentor();
+                            break;
 
-                    case 3:
-                        RegistrarProyecto();
-                        break;
+                        case 3:
+                            RegistrarProyecto();
+                            break;
 
-                    case 4:
-                        Listar();
-                        break;
+                        case 4:
+                            Listar();
+                            break;
 
-                    case 5:
-                        AsignarMentores();
-                        break;
+                        case 5:
+                            AsignarMentores();
+                            break;
 
-                    case 6:
-                        Evaluar();
-                        break;
+                        case 6:
+                            Evaluar();
+                            break;
 
-                    case 7:
-                        MostrarRanking();
-                        break;
+                        case 7:
+                            MostrarRanking();
+                            break;
+                    }
+                }
+                // FIX: las operaciones de dominio (asignar/evaluar) pueden
+                // lanzar excepciones de validación; se muestran como mensaje
+                // de consola en lugar de interrumpir el programa.
+                catch (Exception ex)
+                {
+                    Console.WriteLine();
+                    Console.WriteLine("Error: " + ex.Message);
                 }
 
                 if (opcion != 8)
