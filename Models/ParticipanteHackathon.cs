@@ -24,7 +24,6 @@ namespace Hackathon2026
         public PersonaDatos Persona { get; set; }
 
         public string IdInscripcion { get; set; }
-        public string Telefono { get; set; }
         public string ProvinciaPais { get; set; }
         public string Rol { get; set; }
 

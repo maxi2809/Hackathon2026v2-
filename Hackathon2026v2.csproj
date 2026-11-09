@@ -7,4 +7,10 @@
     <Nullable>disable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <!-- La carpeta de pruebas unitarias compila en su propio proyecto. -->
+    <Compile Remove="Hackathon2026v2.Tests\**" />
+    <None Remove="Hackathon2026v2.Tests\**" />
+  </ItemGroup>
+
 </Project>
