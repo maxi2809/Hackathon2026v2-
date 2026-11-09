@@ -789,7 +789,7 @@ namespace Hackathon2026
             if (pendientes.Count == 0)
             {
                 Console.WriteLine(
-                    "\nYa evaluó todos los proyectos de su categoría.");
+                    "\nYa evaluó todos los proyectos que tenía disponibles.");
                 return;
             }
 
@@ -1101,17 +1101,18 @@ namespace Hackathon2026
                             Presentacion = evaluacion.Presentacion
                         });
 
-                    MentorJurado jurado =
+                    MentorJurado evaluador =
                         mentores.FirstOrDefault(
                             m =>
-                                m.Tipo == TipoParticipante.Jurado &&
                                 m.Dni != null &&
                                 m.Dni.Equals(
                                     evaluacion.DniJurado,
                                     StringComparison.OrdinalIgnoreCase));
 
-                    if (jurado != null)
-                        jurado.IncrementarProyectosEvaluados();
+                    // Suma el contador tanto a jurados como a mentores
+                    // evaluadores (ambos pueden haber evaluado).
+                    if (evaluador != null)
+                        evaluador.IncrementarProyectosEvaluados();
                 }
             }
 
