@@ -11,3 +11,6 @@ prueba-salida.txt
 # Fragmentos de prueba (quedó consolidado en prueba-completa.txt)
 prueba-ingreso.txt
 prueba-jurado2.txt
+
+# Datos generados en tiempo de ejecución
+datos-hackathon.json

@@ -1,522 +1,11 @@
 using System;
 using System.Collections.Generic;
-using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace Hackathon2026
 {
-    public enum CategoriaHackathon
-    {
-        ESports = 1,
-        IoTDeportivo = 2,
-        Biomecanica = 3
-    }
-
-    public enum TipoParticipante
-    {
-        Mentor = 1,
-        Jurado = 2
-    }
-
-    public static class CategoriaHelper
-    {
-        public static string Nombre(CategoriaHackathon categoria)
-        {
-            switch (categoria)
-            {
-                case CategoriaHackathon.ESports:
-                    return "E-Sports";
-
-                case CategoriaHackathon.IoTDeportivo:
-                    return "IoT Deportivo";
-
-                case CategoriaHackathon.Biomecanica:
-                    return "Biomecánica";
-
-                default:
-                    return "Categoría desconocida";
-            }
-        }
-    }
-
-    public static class ValidadorConsola
-    {
-        public static string LeerTexto(string mensaje)
-        {
-            string valor;
-
-            do
-            {
-                Console.Write(mensaje);
-                valor = Console.ReadLine() ?? string.Empty;
-            }
-            while (string.IsNullOrWhiteSpace(valor));
-
-            return valor.Trim();
-        }
-
-        public static string LeerNombre(string mensaje)
-        {
-            string nombre;
-
-            do
-            {
-                Console.Write(mensaje);
-                nombre = Console.ReadLine() ?? string.Empty;
-
-                bool valido = !string.IsNullOrWhiteSpace(nombre);
-
-                foreach (char caracter in nombre)
-                {
-                    if (!char.IsLetter(caracter) && caracter != ' ')
-                    {
-                        valido = false;
-                        break;
-                    }
-                }
-
-                if (valido)
-                    return nombre.Trim();
-
-                Console.WriteLine("Nombre inválido.");
-            }
-            while (true);
-        }
-
-        public static string LeerDni(string mensaje)
-        {
-            string dni;
-
-            do
-            {
-                Console.Write(mensaje);
-                dni = (Console.ReadLine() ?? string.Empty).Trim();
-
-                long numero;
-
-                if (long.TryParse(dni, out numero) &&
-                    dni.Length >= 7 &&
-                    dni.Length <= 8)
-                {
-                    return dni;
-                }
-
-                Console.WriteLine(
-                    "DNI inválido. Debe contener entre 7 y 8 números.");
-            }
-            while (true);
-        }
-
-        public static string LeerEmail(string mensaje)
-        {
-            string email;
-
-            do
-            {
-                Console.Write(mensaje);
-                email = (Console.ReadLine() ?? string.Empty).Trim();
-
-                if (Regex.IsMatch(
-                    email,
-                    @"^[^@\s]+@[^@\s]+\.[^@\s]+$"))
-                {
-                    return email;
-                }
-
-                Console.WriteLine("Email inválido.");
-            }
-            while (true);
-        }
-
-        public static string LeerTelefono(string mensaje)
-        {
-            string telefono;
-
-            do
-            {
-                Console.Write(mensaje);
-
-                telefono = Console.ReadLine() ?? string.Empty;
-
-                string limpio = telefono
-                    .Replace("+", "")
-                    .Replace("-", "")
-                    .Replace(" ", "")
-                    .Replace("(", "")
-                    .Replace(")", "");
-
-                long numero;
-
-                if (long.TryParse(limpio, out numero) &&
-                    limpio.Length >= 8 &&
-                    limpio.Length <= 15)
-                {
-                    return telefono;
-                }
-
-                Console.WriteLine("Teléfono inválido.");
-            }
-            while (true);
-        }
-
-        public static int LeerEntero(
-            string mensaje,
-            int minimo,
-            int maximo)
-        {
-            int valor;
-
-            do
-            {
-                Console.Write(mensaje);
-
-                if (int.TryParse(
-                    Console.ReadLine(),
-                    out valor) &&
-                    valor >= minimo &&
-                    valor <= maximo)
-                {
-                    return valor;
-                }
-
-                Console.WriteLine("Valor inválido.");
-            }
-            while (true);
-        }
-
-        // FIX: acepta coma o punto como separador decimal,
-        // independente de la cultura de la máquina.
-        public static double LeerDouble(
-            string mensaje,
-            double minimo,
-            double maximo)
-        {
-            double valor;
-
-            do
-            {
-                Console.Write(mensaje);
-
-                string entrada = (Console.ReadLine() ?? string.Empty)
-                    .Trim()
-                    .Replace(' ', '.')
-                    .Replace(',', '.');
-
-                if (double.TryParse(
-                        entrada,
-                        NumberStyles.Float,
-                        CultureInfo.InvariantCulture,
-                        out valor) &&
-                    valor >= minimo &&
-                    valor <= maximo)
-                {
-                    return valor;
-                }
-
-                Console.WriteLine("Número inválido.");
-            }
-            while (true);
-        }
-
-        public static CategoriaHackathon LeerCategoria()
-        {
-            Console.WriteLine();
-            Console.WriteLine("1 - E-Sports");
-            Console.WriteLine("2 - IoT Deportivo");
-            Console.WriteLine("3 - Biomecánica");
-
-            int opcion = LeerEntero(
-                "Categoría: ",
-                1,
-                3);
-
-            return (CategoriaHackathon)opcion;
-        }
-
-        public static string LeerTextoSinNumeros(string mensaje)
-        {
-            string valor;
-
-            do
-            {
-                Console.Write(mensaje);
-                valor = Console.ReadLine() ?? string.Empty;
-
-                if (!string.IsNullOrWhiteSpace(valor))
-                {
-                    bool contieneNumero = false;
-
-                    foreach (char caracter in valor)
-                    {
-                        if (char.IsDigit(caracter))
-                        {
-                            contieneNumero = true;
-                            break;
-                        }
-                    }
-
-                    if (!contieneNumero)
-                        return valor.Trim();
-                }
-
-                Console.WriteLine(
-                    "El valor no puede estar vacío ni contener números.");
-            }
-            while (true);
-        }
-    }
-
-    public abstract class ParticipanteHackathon
-    {
-        public string IdInscripcion { get; set; }
-        public string Dni { get; set; }
-        public string Nombre { get; set; }
-        public string Email { get; set; }
-        public string Telefono { get; set; }
-        public string ProvinciaPais { get; set; }
-        public string Rol { get; set; }
-
-        public abstract double CalcularMetricaBase();
-    }
-
-    public class MentorJurado : ParticipanteHackathon
-    {
-        public TipoParticipante Tipo { get; set; }
-        public string Expertise { get; set; }
-        public int Experiencia { get; set; }
-        public string Institucion { get; set; }
-        public int ProyectosEvaluados { get; private set; }
-        public int EquiposAsignados { get; private set; }
-        public CategoriaHackathon? CategoriaAsignada { get; set; }
-
-        public void IncrementarEquiposAsignados()
-        {
-            EquiposAsignados++;
-        }
-
-        public void IncrementarProyectosEvaluados()
-        {
-            ProyectosEvaluados++;
-        }
-
-        public override double CalcularMetricaBase()
-        {
-            return ProyectosEvaluados;
-        }
-    }
-
-    public class Competidor : ParticipanteHackathon
-    {
-        public string NombreEquipo { get; set; }
-        public CategoriaHackathon Categoria { get; set; }
-        public string LenguajePrincipal { get; set; }
-        public Proyecto ProyectoAsignado { get; private set; }
-        public MentorJurado MentorAsignado { get; private set; }
-
-        public void AsignarProyecto(Proyecto proyecto)
-        {
-            if (proyecto == null)
-                throw new ArgumentNullException(nameof(proyecto));
-
-            if (ProyectoAsignado != null)
-                throw new InvalidOperationException(
-                    "El competidor ya tiene un proyecto asignado.");
-
-            if (proyecto.Categoria != Categoria)
-                throw new InvalidOperationException(
-                    "El proyecto no pertenece a la categoría del competidor.");
-
-            ProyectoAsignado = proyecto;
-        }
-
-        public void AsignarMentor(MentorJurado mentor)
-        {
-            if (mentor == null)
-                throw new ArgumentNullException(nameof(mentor));
-
-            if (MentorAsignado != null)
-                throw new InvalidOperationException(
-                    "El competidor ya tiene un mentor asignado.");
-
-            if (!mentor.CategoriaAsignada.HasValue ||
-                mentor.CategoriaAsignada.Value != Categoria)
-            {
-                throw new InvalidOperationException(
-                    "El mentor no pertenece a la categoría del competidor.");
-            }
-
-            MentorAsignado = mentor;
-            mentor.IncrementarEquiposAsignados();
-        }
-
-        public override double CalcularMetricaBase()
-        {
-            if (ProyectoAsignado == null)
-                return 0;
-
-            return ProyectoAsignado.CalcularPuntajeFinal();
-        }
-    }
-
-    public class EvaluacionProyecto
-    {
-        public string DniJurado { get; set; }
-        public double Innovacion { get; set; }
-        public double Viabilidad { get; set; }
-        public double Presentacion { get; set; }
-    }
-
-    public abstract class Proyecto
-    {
-        private readonly List<EvaluacionProyecto> evaluaciones =
-            new List<EvaluacionProyecto>();
-
-        public string Titulo { get; private set; }
-        public string Descripcion { get; private set; }
-        public string Repositorio { get; private set; }
-        public CategoriaHackathon Categoria { get; private set; }
-
-        public double Innovacion { get; private set; }
-        public double Viabilidad { get; private set; }
-        public double Presentacion { get; private set; }
-        public double? Promedio { get; private set; }
-
-        public IReadOnlyList<EvaluacionProyecto> Evaluaciones
-        {
-            get
-            {
-                return evaluaciones.AsReadOnly();
-            }
-        }
-
-        protected Proyecto(
-            string titulo,
-            string descripcion,
-            string repositorio,
-            CategoriaHackathon categoria)
-        {
-            Titulo = titulo;
-            Descripcion = descripcion;
-            Repositorio = repositorio;
-            Categoria = categoria;
-        }
-
-        public void AgregarEvaluacion(EvaluacionProyecto evaluacion)
-        {
-            if (evaluacion == null)
-                throw new ArgumentNullException(nameof(evaluacion));
-
-            if (evaluacion.Innovacion < 0 ||
-                evaluacion.Innovacion > 10 ||
-                evaluacion.Viabilidad < 0 ||
-                evaluacion.Viabilidad > 10 ||
-                evaluacion.Presentacion < 0 ||
-                evaluacion.Presentacion > 10)
-            {
-                throw new ArgumentException(
-                    "Las notas deben estar entre 0 y 10.");
-            }
-
-            if (YaEvaluadoPor(evaluacion.DniJurado))
-            {
-                throw new InvalidOperationException(
-                    "El jurado ya evaluó este proyecto.");
-            }
-
-            evaluaciones.Add(evaluacion);
-
-            Innovacion = evaluaciones.Average(e => e.Innovacion);
-            Viabilidad = evaluaciones.Average(e => e.Viabilidad);
-            Presentacion = evaluaciones.Average(e => e.Presentacion);
-
-            Promedio = evaluaciones.Average(e =>
-                (e.Innovacion + e.Viabilidad + e.Presentacion) / 3);
-        }
-
-        public bool YaEvaluadoPor(string dniJurado)
-        {
-            return evaluaciones.Any(e =>
-                e.DniJurado != null &&
-                e.DniJurado.Equals(
-                    dniJurado,
-                    StringComparison.OrdinalIgnoreCase));
-        }
-
-        public bool EstaEvaluado()
-        {
-            return evaluaciones.Count > 0;
-        }
-
-        public abstract double CalcularPuntajeFinal();
-    }
-
-    public class ProyectoESports : Proyecto
-    {
-        public ProyectoESports(
-            string titulo,
-            string descripcion,
-            string repositorio)
-            : base(
-                titulo,
-                descripcion,
-                repositorio,
-                CategoriaHackathon.ESports)
-        {
-        }
-
-        public override double CalcularPuntajeFinal()
-        {
-            return (Innovacion * 0.40) +
-                   (Viabilidad * 0.30) +
-                   (Presentacion * 0.30);
-        }
-    }
-
-    public class ProyectoIoTDeportivo : Proyecto
-    {
-        public ProyectoIoTDeportivo(
-            string titulo,
-            string descripcion,
-            string repositorio)
-            : base(
-                titulo,
-                descripcion,
-                repositorio,
-                CategoriaHackathon.IoTDeportivo)
-        {
-        }
-
-        public override double CalcularPuntajeFinal()
-        {
-            return (Innovacion * 0.50) +
-                   (Viabilidad * 0.30) +
-                   (Presentacion * 0.20);
-        }
-    }
-
-    public class ProyectoBiomecanica : Proyecto
-    {
-        public ProyectoBiomecanica(
-            string titulo,
-            string descripcion,
-            string repositorio)
-            : base(
-                titulo,
-                descripcion,
-                repositorio,
-                CategoriaHackathon.Biomecanica)
-        {
-        }
-
-        public override double CalcularPuntajeFinal()
-        {
-            return (Innovacion * 0.30) +
-                   (Viabilidad * 0.50) +
-                   (Presentacion * 0.20);
-        }
-    }
-
     internal class Program
     {
         private static int ultimoIdMentorJurado;
@@ -531,8 +20,13 @@ namespace Hackathon2026
         private static readonly List<Proyecto> proyectos =
             new List<Proyecto>();
 
+        private const string RutaDatos = PersistenciaJson.RutaPorDefecto;
+        private static string avisoCarga;
+
         private static void Main(string[] args)
         {
+            CargarDatosIniciales();
+
             int opcion;
 
             do
@@ -551,6 +45,13 @@ namespace Hackathon2026
                 Console.WriteLine("    6 - Evaluación Proyectos");
                 Console.WriteLine("    7 - Ranking");
                 Console.WriteLine("    8 - Salir");
+
+                if (avisoCarga != null)
+                {
+                    Console.WriteLine();
+                    Console.WriteLine(avisoCarga);
+                    avisoCarga = null;
+                }
 
                 opcion = ValidadorConsola.LeerEntero(
                     "\nSeleccionar una Opción: ",
@@ -604,6 +105,12 @@ namespace Hackathon2026
 
                 if (opcion != 8)
                 {
+                    // Guarda después de cada operación que modifica datos
+                    // (4 y 7 son consultas, no necesitan grabar). Así hay
+                    // datos disponibles para la próxima ejecución o prueba.
+                    if (opcion != 4 && opcion != 7)
+                        PersistirDatos();
+
                     Console.WriteLine("\nPulse una tecla...");
 
                     // FIX: permite probar con entrada redirigida sin excepción.
@@ -611,6 +118,13 @@ namespace Hackathon2026
                         Console.ReadLine();
                     else
                         Console.ReadKey(true);
+                }
+                else
+                {
+                    PersistirDatos();
+                    Console.WriteLine();
+                    Console.WriteLine(
+                        "Datos guardados en: " + RutaDatos);
                 }
             }
             while (opcion != 8);
@@ -1240,6 +754,216 @@ namespace Hackathon2026
                     " evaluacion(es))");
 
                 puntajeAnterior = puntaje;
+            }
+        }
+
+        // ===== Persistencia =====
+
+        private static void CargarDatosIniciales()
+        {
+            try
+            {
+                if (!File.Exists(RutaDatos))
+                    return; // primera ejecución: no hay archivo
+
+                DatosHackathonDto datos = PersistenciaJson.Cargar(
+                    RutaDatos);
+
+                ReconstruirEstado(datos);
+
+                avisoCarga =
+                    "Datos cargados: " +
+                    competidores.Count +
+                    " competidores, " +
+                    mentores.Count +
+                    " mentores/jurados, " +
+                    proyectos.Count +
+                    " proyectos.";
+            }
+            catch (Exception ex)
+            {
+                avisoCarga =
+                    "Aviso: no se pudo cargar '" +
+                    RutaDatos +
+                    "' (" +
+                    ex.Message +
+                    "). Se inicia con datos vacíos.";
+            }
+        }
+
+        private static void PersistirDatos()
+        {
+            try
+            {
+                PersistenciaJson.Guardar(
+                    RutaDatos,
+                    competidores,
+                    mentores,
+                    proyectos,
+                    ultimoIdCompetidor,
+                    ultimoIdMentorJurado);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(
+                    "Aviso: no se pudieron guardar los datos (" +
+                    ex.Message +
+                    ").");
+            }
+        }
+
+        // Reconstruye el estado del dominio a partir del DTO. Se reusan los
+        // métodos reales del dominio (AsignarProyecto, AsignarMentor,
+        // AgregarEvaluación), de modo que los contadores y las validaciones
+        // se reproducen de forma idéntica al flujo normal del programa.
+        private static void ReconstruirEstado(DatosHackathonDto datos)
+        {
+            ultimoIdCompetidor = datos.UltimoIdCompetidor;
+            ultimoIdMentorJurado = datos.UltimoIdMentorJurado;
+
+            foreach (MentorJuradoDto dto in datos.MentoresJurados)
+            {
+                mentores.Add(new MentorJurado
+                {
+                    IdInscripcion = dto.IdInscripcion,
+                    Dni = dto.Dni,
+                    Nombre = dto.Nombre,
+                    Email = dto.Email,
+                    Telefono = dto.Telefono,
+                    ProvinciaPais = dto.ProvinciaPais,
+                    Rol = dto.Rol,
+                    Tipo = (TipoParticipante)dto.Tipo,
+                    Experiencia = dto.Experiencia,
+                    Institucion = dto.Institucion,
+                    CategoriaAsignada = dto.CategoriaAsignada.HasValue
+                        ? (CategoriaHackathon)dto.CategoriaAsignada.Value
+                        : (CategoriaHackathon?)null
+                });
+            }
+
+            foreach (CompetidorDto dto in datos.Competidores)
+            {
+                competidores.Add(new Competidor
+                {
+                    IdInscripcion = dto.IdInscripcion,
+                    Dni = dto.Dni,
+                    Nombre = dto.Nombre,
+                    Email = dto.Email,
+                    Telefono = dto.Telefono,
+                    ProvinciaPais = dto.ProvinciaPais,
+                    Rol = dto.Rol,
+                    NombreEquipo = dto.NombreEquipo,
+                    Categoria = (CategoriaHackathon)dto.Categoria,
+                    LenguajePrincipal = dto.LenguajePrincipal
+                });
+            }
+
+            foreach (ProyectoDto dto in datos.Proyectos)
+            {
+                Competidor dueno =
+                    competidores.FirstOrDefault(
+                        c =>
+                            c.Dni != null &&
+                            c.Dni.Equals(
+                                dto.DniCompetidor,
+                                StringComparison.OrdinalIgnoreCase));
+
+                if (dueno == null)
+                {
+                    Console.WriteLine(
+                        "Aviso: proyecto '" +
+                        dto.Titulo +
+                        "' omitido: su competidor no fue encontrado.");
+
+                    continue;
+                }
+
+                Proyecto proyecto;
+
+                switch (dto.Tipo)
+                {
+                    case nameof(ProyectoESports):
+                        proyecto = new ProyectoESports(
+                            dto.Titulo,
+                            dto.Descripcion,
+                            dto.Repositorio);
+                        break;
+
+                    case nameof(ProyectoIoTDeportivo):
+                        proyecto = new ProyectoIoTDeportivo(
+                            dto.Titulo,
+                            dto.Descripcion,
+                            dto.Repositorio);
+                        break;
+
+                    case nameof(ProyectoBiomecanica):
+                        proyecto = new ProyectoBiomecanica(
+                            dto.Titulo,
+                            dto.Descripcion,
+                            dto.Repositorio);
+                        break;
+
+                    default:
+                        Console.WriteLine(
+                            "Aviso: proyecto '" +
+                            dto.Titulo +
+                            "' omitido: tipo desconocido '" +
+                            dto.Tipo +
+                            "'.");
+                        continue;
+                }
+
+                dueno.AsignarProyecto(proyecto);
+                proyectos.Add(proyecto);
+
+                foreach (EvaluacionDto evaluacion in dto.Evaluaciones)
+                {
+                    proyecto.AgregarEvaluacion(
+                        new EvaluacionProyecto
+                        {
+                            DniJurado = evaluacion.DniJurado,
+                            Innovacion = evaluacion.Innovacion,
+                            Viabilidad = evaluacion.Viabilidad,
+                            Presentacion = evaluacion.Presentacion
+                        });
+
+                    MentorJurado jurado =
+                        mentores.FirstOrDefault(
+                            m =>
+                                m.Tipo == TipoParticipante.Jurado &&
+                                m.Dni != null &&
+                                m.Dni.Equals(
+                                    evaluacion.DniJurado,
+                                    StringComparison.OrdinalIgnoreCase));
+
+                    if (jurado != null)
+                        jurado.IncrementarProyectosEvaluados();
+                }
+            }
+
+            foreach (CompetidorDto dto in datos.Competidores)
+            {
+                if (string.IsNullOrEmpty(dto.DniMentor))
+                    continue;
+
+                Competidor competidor =
+                    competidores.FirstOrDefault(
+                        c =>
+                            c.Dni != null &&
+                            c.Dni.Equals(
+                                dto.Dni,
+                                StringComparison.OrdinalIgnoreCase));
+
+                MentorJurado mentor =
+                    mentores.FirstOrDefault(
+                        m =>
+                            m.Dni != null &&
+                            m.Dni.Equals(
+                                dto.DniMentor,
+                                StringComparison.OrdinalIgnoreCase));
+
+                if (competidor != null && mentor != null)
+                    competidor.AsignarMentor(mentor);
             }
         }
     }
