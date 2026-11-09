@@ -20,13 +20,12 @@ dotnet run
 
 ## Cómo probar (regresión por guiones)
 
-Los guiones aportan las líneas de entrada (una por prompt) y exigen que la
-base de datos esté limpia (se regenera sola):
+Los guiones aportan las líneas de entrada (una por prompt). Como el estado
+vive en memoria, cada corrida arranca con los datos en blanco y de
+principio a fin en la misma pasada:
 
 ```powershell
-Remove-Item datos-hackathon.json -ErrorAction SilentlyContinue
 Get-Content prueba-completa.txt        | dotnet run --no-build
-Remove-Item datos-hackathon.json -ErrorAction SilentlyContinue
 Get-Content prueba-persona-jurados.txt | dotnet run --no-build
 ```
 
@@ -58,7 +57,6 @@ dotnet test Hackathon2026v2.Tests
 | `Models\CategoriaHackathon.cs` | Enumeraciones + helper de nombres |
 | `UI\ValidadorConsola.cs` | Lecturas validadas; máximo 3 intentos por ingreso |
 | `UI\IntentosAgotadosException.cs` | Señala los 3 intentos usados: el flujo vuelve al menú principal |
-| `Persistencia\PersistenciaJson.cs` + `DatosHackathonDto.cs` | Guarda/carga todo el estado en `datos-hackathon.json` (legible, indentado) |
 | `Hackathon2026v2.Tests\` | Proyecto de pruebas unitarias del dominio (xUnit) |
 
 ## Reglas de negocio implementadas
@@ -82,9 +80,8 @@ dotnet test Hackathon2026v2.Tests
   proyecto y la nota conjunta promedia a todos los evaluadores.
 - **Ranking**: de mayor a menor por puntaje final (empates comparten
   posición) y los proyectos sin evaluación se muestran como
-  **PENDIENTES**, tal como pide el diagrama.
-- **Persistencia**: cada operación modificadora guarda el estado completo y
-  al abrir se recarga de `datos-hackathon.json`.
+  **PENDIENTES**, tal como pide el diagrama. El estado vive en memoria
+  mientras la aplicación está abierta.
 
 ## Diagrama de flujo (versión implementada)
 

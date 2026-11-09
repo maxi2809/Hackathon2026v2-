@@ -1,15 +1,14 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace Hackathon2026
 {
   
-    /*Contiene el menú principal y todos los
-    flujos de consola (registrador, listado, asignaciones, evaluación
-    y ranking), además de la orquestación de carga/persistencia.*/
+    /*Contiene el menÃº principal y todos los
+    flujos de consola (registrador, listado, asignaciones,
+    evaluaciÃ³n y ranking).*/
    
   
     internal class Program
@@ -26,17 +25,12 @@ namespace Hackathon2026
         private static readonly List<Proyecto> proyectos =
             new List<Proyecto>();
 
-        private const string RutaDatos = PersistenciaJson.RutaPorDefecto;
-        private static string avisoCarga;
-
         
-        /*Punto de entrada: muestra el menú principal en un bucle y 
-         despacha cada opción a su flujo.*/
+        /*Punto de entrada: muestra el menÃº principal en un bucle y 
+         despacha cada opciÃ³n a su flujo.*/
        
         private static void Main(string[] args)
         {
-            CargarDatosIniciales();
-
             int opcion = 0;
 
             do
@@ -56,22 +50,15 @@ namespace Hackathon2026
                 // 6 salida para cerrar
                 Console.WriteLine("    6 - Salir");
 
-                if (avisoCarga != null)
-                {
-                    Console.WriteLine();
-                    Console.WriteLine(avisoCarga);
-                    avisoCarga = null;
-                }
-
                 try
                 {
                     opcion = ValidadorConsola.LeerEntero(
-                        "\nSeleccionar una Opción: ",
+                        "\nSeleccionar una OpciÃ³n: ",
                         1,
                         6);
                 }
-                /*Máximo 3 intentos; si se agotan, se muestra el aviso y 
-                 se repite el bucle (el usuario ya está en el menú principal).*/
+                /*MÃ¡ximo 3 intentos; si se agotan, se muestra el aviso y 
+                 se repite el bucle (el usuario ya estÃ¡ en el menÃº principal).*/
                 catch (IntentosAgotadosException)
                 {
                     Console.WriteLine();
@@ -108,14 +95,14 @@ namespace Hackathon2026
                     }
                 }
                 /* Si se usaron los 3 intentos de un ingreso, se avisa y la
-                 vuelve al menú principal (el flujo se aborta) */
+                 vuelve al menÃº principal (el flujo se aborta) */
                 catch (IntentosAgotadosException)
                 {
                     Console.WriteLine();
                     Console.WriteLine(IntentosAgotadosException.Mensaje);
                 }
-                // Las operaciones de dominio (asignar/evaluar) también pueden
-                // lanzar excepciones de validación; se muestran como mensaje
+                // Las operaciones de dominio (asignar/evaluar) tambiÃ©n pueden
+                // lanzar excepciones de validaciÃ³n; se muestran como mensaje
                 // de consola sin interrumpir el programa.
                 catch (Exception ex)
                 {
@@ -125,15 +112,9 @@ namespace Hackathon2026
 
                 if (opcion != 6)
                 {
-                    // Guarda después de cada operación que modifica datos
-                    // (2 y 5 son consultas, no necesitan grabar). Así hay
-                    // datos disponibles para la próxima ejecución o prueba.
-                    if (opcion != 2 && opcion != 5)
-                        PersistirDatos();
-
                     Console.WriteLine("\nPulse una tecla...");
 
-                    // Permite probar con entrada redirigida sin excepción.
+                    // Permite probar con entrada redirigida sin excepciÃ³n.
                     if (Console.IsInputRedirected)
                         Console.ReadLine();
                     else
@@ -141,17 +122,16 @@ namespace Hackathon2026
                 }
                 else
                 {
-                    PersistirDatos();
                     Console.WriteLine();
                     Console.WriteLine(
-                        "Datos guardados en: " + RutaDatos);
+                        "Gracias por usar el sistema. Hasta luego.");
                 }
             }
             while (opcion != 6);
         }
 
         
-        /// Genera el siguiente ID de inscripción para competidores
+        /// Genera el siguiente ID de inscripciÃ³n para competidores
         /// ("P-001", "P-002", ...) 
        
         private static string ObtenerIdCompetidor()
@@ -161,7 +141,7 @@ namespace Hackathon2026
         }
 
         
-        /// Genera el siguiente ID de inscripción de mentor o jurado
+        /// Genera el siguiente ID de inscripciÃ³n de mentor o jurado
         /// ("M-001", ... para mentores; "J-001", ... para jurados)
        
       
@@ -176,7 +156,7 @@ namespace Hackathon2026
             return prefijo + ultimoIdMentorJurado.ToString("D3");
         }
 
-        //Verificación de duplicados único método.
+        //VerificaciÃ³n de duplicados Ãºnico mÃ©todo.
         /// Indica si ya existe una persona (competidor o mentor/jurado)
         /// registrada con el DNI dado. Se usa para rechazar registros
         /// duplicados al dar de alta a una persona.
@@ -247,7 +227,7 @@ namespace Hackathon2026
         }
 
     
-        /// Flujo de la opción 1, pide seleccionar qué proceso se desea realizar y 
+        /// Flujo de la opciÃ³n 1, pide seleccionar quÃ© proceso se desea realizar y 
         /// delelega en el registro correspondiente (participante o mentor/jurado).
        
         private static void Registrar()
@@ -255,7 +235,7 @@ namespace Hackathon2026
             Console.WriteLine("=== REGISTRO ===");
 
             int proceso = ValidadorConsola.LeerEntero(
-                "Seleccionar qué proceso desea realizar" +
+                "Seleccionar quÃ© proceso desea realizar" +
                 " (1 - Participante, 2 - Mentor/Jurado): ",
                 1,
                 2);
@@ -273,16 +253,16 @@ namespace Hackathon2026
         {
             Console.WriteLine("=== REGISTRO DE PARTICIPANTE ===");
 
-            // Parte común (participante, mentor y jurado comparten esto),
-            // con verificación de duplicados y hasta 3 intentos.
+            // Parte comÃºn (participante, mentor y jurado comparten esto),
+            // con verificaciÃ³n de duplicados y hasta 3 intentos.
             PersonaDatos datosPersona = SolicitarPersonaUnica();
 
-            // Campos específicos del rol: competencia (ID Inscripción,
-            // Provincia/País y Rol pertenecen a la clase base según la
-            // consigna; la lista completa de Competidor lleva además
+            // Campos especÃ­ficos del rol: competencia (ID InscripciÃ³n,
+            // Provincia/PaÃ­s y Rol pertenecen a la clase base segÃºn la
+            // consigna; la lista completa de Competidor lleva ademÃ¡s
             // Lenguaje Principal).
             string provinciaPais = ValidadorConsola.LeerTextoSinNumeros(
-                "Provincia o país: ");
+                "Provincia o paÃ­s: ");
 
             string rol = ValidadorConsola.LeerTextoSinNumeros(
                 "Rol dentro del equipo: ");
@@ -302,10 +282,10 @@ namespace Hackathon2026
             string tituloProyecto = ValidadorConsola.LeerTexto(
                 "Nombre del proyecto: ");
 
-            // Título, Descripción y Repositorio son los campos del
-            // Proyecto según la consigna.
+            // TÃ­tulo, DescripciÃ³n y Repositorio son los campos del
+            // Proyecto segÃºn la consigna.
             string descripcion = ValidadorConsola.LeerTexto(
-                "Descripción del proyecto: ");
+                "DescripciÃ³n del proyecto: ");
 
             string repositorio = ValidadorConsola.LeerTexto(
                 "URL del repositorio: ");
@@ -321,7 +301,7 @@ namespace Hackathon2026
                 LenguajePrincipal = lenguaje
             };
 
-            // Crea la subclase concreta según la categoría elegida.
+            // Crea la subclase concreta segÃºn la categorÃ­a elegida.
             Proyecto proyecto;
 
             switch (categoria)
@@ -348,28 +328,28 @@ namespace Hackathon2026
                     break;
             }
 
-            // Asignación por los métodos del dominio (valida y enlaza).
+            // AsignaciÃ³n por los mÃ©todos del dominio (valida y enlaza).
             competidor.AsignarProyecto(proyecto);
             proyectos.Add(proyecto);
             competidores.Add(competidor);
 
             Console.WriteLine();
             Console.WriteLine(
-                "El registro se realizó correctamente.");
+                "El registro se realizÃ³ correctamente.");
             Console.WriteLine(
                 "Proyecto: " + tituloProyecto);
             Console.WriteLine(
-                "Categoría: " + CategoriaHelper.Nombre(categoria));
+                "CategorÃ­a: " + CategoriaHelper.Nombre(categoria));
             Console.WriteLine(
                 "ID Participante: " + competidor.IdInscripcion);
         }
 
         
         /// Registro de MENTOR/JURADO: primero el tipo, luego la parte
-        /// común DNI, nombre y apellido, correo, con verificación de duplicados) y 
-        /// después los campos del rol: categoría (SÓLO mentores: el jurado no tiene
-        /// categoría porque evalúa proyectos de todas),
-        /// años de experiencia e institución
+        /// comÃºn DNI, nombre y apellido, correo, con verificaciÃ³n de duplicados) y 
+        /// despuÃ©s los campos del rol: categorÃ­a (SÃ“LO mentores: el jurado no tiene
+        /// categorÃ­a porque evalÃºa proyectos de todas),
+        /// aÃ±os de experiencia e instituciÃ³n
       
         private static void RegistrarMentorJurado()
         {
@@ -382,25 +362,25 @@ namespace Hackathon2026
 
             bool esMentor = tipoSeleccionado == 1;
 
-            // Parte común (participante, mentor y jurado comparten esto),
-            // con verificación de duplicados y hasta 3 intentos.
+            // Parte comÃºn (participante, mentor y jurado comparten esto),
+            // con verificaciÃ³n de duplicados y hasta 3 intentos.
             PersonaDatos datosPersona = SolicitarPersonaUnica();
 
-            // La categoría SÓLO se pide para mentores.
+            // La categorÃ­a SÃ“LO se pide para mentores.
             CategoriaHackathon? categoriaAsignada = esMentor
                 ? ValidadorConsola.LeerCategoria()
                 : (CategoriaHackathon?)null;
 
             string expertise = ValidadorConsola.LeerTexto(
-                "Expertise (área de especialidad): ");
+                "Expertise (Ã¡rea de especialidad): ");
 
             int experiencia = ValidadorConsola.LeerEntero(
-                "Años de experiencia: ",
+                "AÃ±os de experiencia: ",
                 1,
                 50);
 
             string institucion = ValidadorConsola.LeerTexto(
-                "Institución: ");
+                "InstituciÃ³n: ");
 
             MentorJurado mentor = new MentorJurado
             {
@@ -419,16 +399,16 @@ namespace Hackathon2026
 
             Console.WriteLine();
             Console.WriteLine(
-                "El registro se realizó correctamente.");
+                "El registro se realizÃ³ correctamente.");
             Console.WriteLine(
                 (esMentor ? "ID Mentor: " : "ID Jurado: ") +
                 mentor.IdInscripcion);
         }
 
         
-        /// Flujo de la opción 2: consulta. Muestra tres listados:
+        /// Flujo de la opciÃ³n 2: consulta. Muestra tres listados:
         /// participantes, mentores/jurados y proyectos con su estado de
-        /// evaluación (promedio y puntaje, o "Pendiente").
+        /// evaluaciÃ³n (promedio y puntaje, o "Pendiente").
      
         private static void Listar()
         {
@@ -475,8 +455,8 @@ namespace Hackathon2026
             {
                 foreach (MentorJurado mentor in mentores)
                 {
-                    // Los jurados no tienen categoría asignada: evalúan
-                    // proyectos de todas las categorías.
+                    // Los jurados no tienen categorÃ­a asignada: evalÃºan
+                    // proyectos de todas las categorÃ­as.
                     string categoria = mentor.CategoriaAsignada.HasValue
                         ? CategoriaHelper.Nombre(
                             mentor.CategoriaAsignada.Value)
@@ -487,7 +467,7 @@ namespace Hackathon2026
                         mentor.Nombre +
                         " | Tipo: " +
                         mentor.Tipo +
-                        " | Categoría: " +
+                        " | CategorÃ­a: " +
                         categoria +
                         " | Proyectos evaluados: " +
                         mentor.ProyectosEvaluados);
@@ -520,7 +500,7 @@ namespace Hackathon2026
                     Console.WriteLine(
                         "Proyecto: " +
                         proyecto.Titulo +
-                        " | Categoría: " +
+                        " | CategorÃ­a: " +
                         CategoriaHelper.Nombre(
                             proyecto.Categoria) +
                         " | Evaluaciones: " +
@@ -534,15 +514,15 @@ namespace Hackathon2026
         }
 
       
-        /// Flujo de la opción 3: reparte mentores entre los competidores que
+        /// Flujo de la opciÃ³n 3: reparte mentores entre los competidores que
         /// tienen proyecto. Para cada competidor sin mentor elige, de su
-        /// categoría, al mentor MENOS cargado (balanceo) y lo asigna
-        /// mediante el método del dominio, que valida e incrementa la
+        /// categorÃ­a, al mentor MENOS cargado (balanceo) y lo asigna
+        /// mediante el mÃ©todo del dominio, que valida e incrementa la
         /// carga del mentor.
        
         private static void AsignarMentores()
         {
-            Console.WriteLine("=== ASIGNACIÓN DE MENTORES ===");
+            Console.WriteLine("=== ASIGNACIÃ“N DE MENTORES ===");
 
             if (competidores.Count == 0)
             {
@@ -572,7 +552,7 @@ namespace Hackathon2026
                     continue;
                 }
 
-                //Se elige al mentor MENOS cargado y la asignación
+                //Se elige al mentor MENOS cargado y la asignaciÃ³n
                 // incrementa su contador, de modo que la carga se reparte
                 // en vez de caer siempre sobre el mismo.
                 MentorJurado mentorDisponible =
@@ -598,7 +578,7 @@ namespace Hackathon2026
                 competidor.AsignarMentor(mentorDisponible);
 
                 Console.WriteLine(
-                    "Se asignó el mentor " +
+                    "Se asignÃ³ el mentor " +
                     mentorDisponible.Nombre +
                     " al competidor " +
                     competidor.Nombre);
@@ -606,24 +586,24 @@ namespace Hackathon2026
         }
 
       
-        /// Flujo de la opción 4: un mentor o un jurado (identificado por DNI)
-        /// evalúa proyectos. Reglas:
-        /// - Jurado: evalúa TODOS los proyectos que quiera (todas las
-        ///   categorías; no tiene categoría asignada).
-        /// - Mentor: sólo proyectos de su categoría y NO el proyecto del
-        ///   equipo que acompaña (sólo los de otros equipos).
+        /// Flujo de la opciÃ³n 4: un mentor o un jurado (identificado por DNI)
+        /// evalÃºa proyectos. Reglas:
+        /// - Jurado: evalÃºa TODOS los proyectos que quiera (todas las
+        ///   categorÃ­as; no tiene categorÃ­a asignada).
+        /// - Mentor: sÃ³lo proyectos de su categorÃ­a y NO el proyecto del
+        ///   equipo que acompaÃ±a (sÃ³lo los de otros equipos).
         /// Toma las tres notas (0-10), las registra en el proyecto (que
-        /// recalcula promedios) y suma la evaluación al evaluador.
+        /// recalcula promedios) y suma la evaluaciÃ³n al evaluador.
       
         private static void Evaluar()
         {
-            Console.WriteLine("=== EVALUACIÓN DE PROYECTOS ===");
+            Console.WriteLine("=== EVALUACIÃ“N DE PROYECTOS ===");
 
             string dniEvaluador =
                 ValidadorConsola.LeerDni(
                     "DNI (mentor o jurado): ");
 
-            // Puede ser mentor o jurado: ambos evalúan proyectos.
+            // Puede ser mentor o jurado: ambos evalÃºan proyectos.
             MentorJurado evaluador =
                 mentores.FirstOrDefault(
                     m =>
@@ -643,11 +623,11 @@ namespace Hackathon2026
             bool esJurado =
                 evaluador.Tipo == TipoParticipante.Jurado;
 
-            // Reglas de quién puede evaluar qué:
-            // - Jurado: todos los proyectos que quiera (sin límite por
-            //   categoría; no tiene categoría asignada).
-            // - Mentor: proyectos de SU categoría, excluyendo el del
-            //   equipo que acompaña (sólo los de otros equipos).
+            // Reglas de quiÃ©n puede evaluar quÃ©:
+            // - Jurado: todos los proyectos que quiera (sin lÃ­mite por
+            //   categorÃ­a; no tiene categorÃ­a asignada).
+            // - Mentor: proyectos de SU categorÃ­a, excluyendo el del
+            //   equipo que acompaÃ±a (sÃ³lo los de otros equipos).
             List<Competidor> elegibles;
 
             if (esJurado)
@@ -659,15 +639,15 @@ namespace Hackathon2026
 
                 Console.WriteLine(
                     "\nTodos los proyectos inscriptos" +
-                    " (jurado: no está limitado por categoría):");
+                    " (jurado: no estÃ¡ limitado por categorÃ­a):");
             }
             else
             {
-                // (Mentor) Regla: sólo puede actuar dentro de su categoría.
+                // (Mentor) Regla: sÃ³lo puede actuar dentro de su categorÃ­a.
                 if (!evaluador.CategoriaAsignada.HasValue)
                 {
                     Console.WriteLine(
-                        "El mentor no tiene categoría asignada.");
+                        "El mentor no tiene categorÃ­a asignada.");
 
                     return;
                 }
@@ -680,15 +660,15 @@ namespace Hackathon2026
                                 evaluador.CategoriaAsignada.Value)
                         .ToList();
 
-                // Un mentor no evalúa el proyecto del equipo que acompaña:
-                // sólo proyectos de otros equipos.
+                // Un mentor no evalÃºa el proyecto del equipo que acompaÃ±a:
+                // sÃ³lo proyectos de otros equipos.
                 elegibles =
                     elegibles
                         .Where(c => c.MentorAsignado != evaluador)
                         .ToList();
 
                 Console.WriteLine(
-                    "\nProyectos de la categoría " +
+                    "\nProyectos de la categorÃ­a " +
                         CategoriaHelper.Nombre(
                             evaluador.CategoriaAsignada.Value) +
                         " (excluye los de su propio equipo):");
@@ -699,13 +679,13 @@ namespace Hackathon2026
                 if (esJurado)
                 {
                     Console.WriteLine(
-                        "No hay proyectos inscriptos todavía.");
+                        "No hay proyectos inscriptos todavÃ­a.");
                 }
                 else
                 {
                     Console.WriteLine(
                         "No hay proyectos elegibles para evaluar" +
-                        " en la categoría " +
+                        " en la categorÃ­a " +
                         CategoriaHelper.Nombre(
                             evaluador.CategoriaAsignada.Value) +
                         " (distinto de sus propios equipos).");
@@ -723,7 +703,7 @@ namespace Hackathon2026
 
                 if (!proyecto.EstaEvaluado())
                 {
-                    estado = "Pendiente de evaluación";
+                    estado = "Pendiente de evaluaciÃ³n";
                 }
                 else
                 {
@@ -734,7 +714,7 @@ namespace Hackathon2026
                         proyecto.Promedio.Value.ToString("0.00");
 
                     if (proyecto.YaEvaluadoPor(dniEvaluador))
-                        estado += " (incluye su evaluación)";
+                        estado += " (incluye su evaluaciÃ³n)";
                 }
 
                 Console.WriteLine(
@@ -747,7 +727,7 @@ namespace Hackathon2026
             }
 
             // Cada evaluador puede evaluar todos los proyectos de su
-            // categoría (cada uno una sola vez por proyecto); la nota
+            // categorÃ­a (cada uno una sola vez por proyecto); la nota
             // final es el promedio de todos los evaluadores.
             List<Competidor> pendientes =
                 elegibles
@@ -758,7 +738,7 @@ namespace Hackathon2026
             if (pendientes.Count == 0)
             {
                 Console.WriteLine(
-                    "\nYa evaluó todos los proyectos que tenía disponibles.");
+                    "\nYa evaluÃ³ todos los proyectos que tenÃ­a disponibles.");
                 return;
             }
 
@@ -775,7 +755,7 @@ namespace Hackathon2026
                 proyectoSeleccionado.Titulo);
 
             double innovacion = ValidadorConsola.LeerDouble(
-                "Innovación (0-10): ",
+                "InnovaciÃ³n (0-10): ",
                 0,
                 10);
 
@@ -785,7 +765,7 @@ namespace Hackathon2026
                 10);
 
             double presentacion = ValidadorConsola.LeerDouble(
-                "Presentación (0-10): ",
+                "PresentaciÃ³n (0-10): ",
                 0,
                 10);
 
@@ -809,11 +789,11 @@ namespace Hackathon2026
         }
 
        
-        /// Flujo de la opción 5: consulta. Ordena los proyectos por
+        /// Flujo de la opciÃ³n 5: consulta. Ordena los proyectos por
         /// puntaje final (respetando el tipo concreto de cada proyecto
-        /// con sus pesos de categoría) y los muestra de mayor a menor
-        /// con posiciones (los empates comparten posición); los
-        /// proyectos sin evaluación se muestran al final como
+        /// con sus pesos de categorÃ­a) y los muestra de mayor a menor
+        /// con posiciones (los empates comparten posiciÃ³n); los
+        /// proyectos sin evaluaciÃ³n se muestran al final como
         /// "PENDIENTE", tal como pide el diagrama de flujo.
         
         private static void MostrarRanking()
@@ -832,7 +812,7 @@ namespace Hackathon2026
                     .ToList();
 
             // Los proyectos sin evaluaciones entran al ranking pero con
-            // la marca PENDIENTE (no compiten por una posición).
+            // la marca PENDIENTE (no compiten por una posiciÃ³n).
             List<Proyecto> pendientes =
                 proyectos
                     .Where(p => !p.EstaEvaluado())
@@ -876,169 +856,5 @@ namespace Hackathon2026
             }
         }
 
-        /// Al inicio del programa: si existe el archivo de datos, carga el
-        /// estado y lo reconstruye; si falla, arranca con listas vacías y
-        /// deja el aviso para mostrar en el primer menú.
-        
-        private static void CargarDatosIniciales()
-        {
-            try
-            {
-                if (!File.Exists(RutaDatos))
-                    return; // primera ejecución: no hay archivo
-
-                DatosHackathonDto datos = PersistenciaJson.Cargar(
-                    RutaDatos);
-
-                ReconstruirEstado(datos);
-
-                avisoCarga =
-                    "Datos cargados: " +
-                    competidores.Count +
-                    " competidores, " +
-                    mentores.Count +
-                    " mentores/jurados, " +
-                    proyectos.Count +
-                    " proyectos.";
-            }
-            catch (Exception ex)
-            {
-                avisoCarga =
-                    "Aviso: no se pudo cargar '" +
-                    RutaDatos +
-                    "' (" +
-                    ex.Message +
-                    "). Se inicia con datos vacíos.";
-            }
-           
-        }
-
-        private static void ReconstruirEstado(DatosHackathonDto datos)
-        {
-            competidores.Clear();
-            mentores.Clear();
-            proyectos.Clear();
-
-            ultimoIdCompetidor = datos.UltimoIdCompetidor;
-            ultimoIdMentorJurado = datos.UltimoIdMentorJurado;
-
-            foreach (MentorJuradoDto dto in datos.MentoresJurados)
-            {
-                mentores.Add(new MentorJurado
-                {
-                    Persona = new PersonaDatos(dto.Dni, dto.Email, dto.Nombre),
-                    IdInscripcion = dto.IdInscripcion,
-                    ProvinciaPais = dto.ProvinciaPais,
-                    Rol = dto.Rol,
-                    Tipo = (TipoParticipante)dto.Tipo,
-                    Expertise = dto.Expertise,
-                    Experiencia = dto.Experiencia,
-                    Institucion = dto.Institucion,
-                    CategoriaAsignada = dto.CategoriaAsignada.HasValue
-                        ? (CategoriaHackathon?)dto.CategoriaAsignada.Value
-                        : null
-                });
-            }
-
-            foreach (CompetidorDto dto in datos.Competidores)
-            {
-                competidores.Add(new Competidor
-                {
-                    Persona = new PersonaDatos(dto.Dni, dto.Email, dto.Nombre),
-                    IdInscripcion = dto.IdInscripcion,
-                    ProvinciaPais = dto.ProvinciaPais,
-                    Rol = dto.Rol,
-                    NombreEquipo = dto.NombreEquipo,
-                    Categoria = (CategoriaHackathon)dto.Categoria,
-                    LenguajePrincipal = dto.LenguajePrincipal
-                });
-            }
-
-            foreach (ProyectoDto dto in datos.Proyectos)
-            {
-                Proyecto proyecto;
-
-                switch (dto.Tipo)
-                {
-                    case nameof(ProyectoESports):
-                        proyecto = new ProyectoESports(
-                            dto.Titulo, dto.Descripcion, dto.Repositorio);
-                        break;
-
-                    case nameof(ProyectoIoTDeportivo):
-                        proyecto = new ProyectoIoTDeportivo(
-                            dto.Titulo, dto.Descripcion, dto.Repositorio);
-                        break;
-
-                    default:
-                        proyecto = new ProyectoBiomecanica(
-                            dto.Titulo, dto.Descripcion, dto.Repositorio);
-                        break;
-                }
-                proyectos.Add(proyecto);
-
-                Competidor competidor = competidores.FirstOrDefault(
-                    c => c.Dni == dto.DniCompetidor);
-
-                if (competidor != null)
-                    competidor.AsignarProyecto(proyecto);
-
-                foreach (EvaluacionDto evaluacion in dto.Evaluaciones)
-                {
-                    proyecto.AgregarEvaluacion(new EvaluacionProyecto
-                    {
-                        DniJurado = evaluacion.DniJurado,
-                        Innovacion = evaluacion.Innovacion,
-                        Viabilidad = evaluacion.Viabilidad,
-                        Presentacion = evaluacion.Presentacion
-                    });
-
-                    MentorJurado jurado = mentores.FirstOrDefault(
-                        m => m.Dni == evaluacion.DniJurado);
-
-                    if (jurado != null)
-                        jurado.IncrementarProyectosEvaluados();
-                }
-            }
-
-            foreach (CompetidorDto dto in datos.Competidores)
-            {
-                if (dto.DniMentor == null)
-                    continue;
-
-                Competidor competidor = competidores.FirstOrDefault(
-                    c => c.Dni == dto.Dni);
-                MentorJurado mentor = mentores.FirstOrDefault(
-                    m => m.Dni == dto.DniMentor);
-
-                if (competidor != null && mentor != null)
-                    competidor.AsignarMentor(mentor);
-            }
-        }
-         /// Delega en la capa de persistencia el guardado del estado
-        /// completo (con los contadores de ID). Silencioso salvo error:
-        /// se llama tras cada operación modificadora y al salir
-        private static void PersistirDatos()
-        {
-            try
-            {
-                PersistenciaJson.Guardar(
-                    RutaDatos,
-                    competidores,
-                    mentores,
-                    proyectos,
-                    ultimoIdCompetidor,
-                    ultimoIdMentorJurado);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(
-                    "Aviso: no se pudieron guardar los datos (" +
-                    ex.Message +
-                    ").");
-            }
-        }
     }
-    }
-
-                    
+}

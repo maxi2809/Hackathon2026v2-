@@ -4,6 +4,3 @@
 # Salidas de compilación
 bin/
 obj/
-
-# Datos generados en tiempo de ejecución
-datos-hackathon.json
