@@ -42,7 +42,7 @@ namespace Hackathon2026
         {
             CargarDatosIniciales();
 
-            int opcion;
+            int opcion = 0;
 
             do
             {
@@ -68,10 +68,22 @@ namespace Hackathon2026
                     avisoCarga = null;
                 }
 
-                opcion = ValidadorConsola.LeerEntero(
-                    "\nSeleccionar una Opción: ",
-                    1,
-                    8);
+                try
+                {
+                    opcion = ValidadorConsola.LeerEntero(
+                        "\nSeleccionar una Opción: ",
+                        1,
+                        8);
+                }
+                // Aun en el menú hay máximo 3 intentos; si se agotan, se
+                // muestra el aviso y se repite el bucle (el usuario ya está
+                // en el menú principal).
+                catch (IntentosAgotadosException)
+                {
+                    Console.WriteLine();
+                    Console.WriteLine(IntentosAgotadosException.Mensaje);
+                    continue;
+                }
 
                 if (!Console.IsOutputRedirected)
                     Console.Clear();
@@ -109,7 +121,14 @@ namespace Hackathon2026
                             break;
                     }
                 }
-                // FIX: las operaciones de dominio (asignar/evaluar) pueden
+                // Si se usaron los 3 intentos de un ingreso, se avisa y la
+                // ejecución vuelve al menú principal (el flujo se aborta).
+                catch (IntentosAgotadosException)
+                {
+                    Console.WriteLine();
+                    Console.WriteLine(IntentosAgotadosException.Mensaje);
+                }
+                // Las operaciones de dominio (asignar/evaluar) también pueden
                 // lanzar excepciones de validación; se muestran como mensaje
                 // de consola en lugar de interrumpir el programa.
                 catch (Exception ex)
@@ -615,41 +634,44 @@ namespace Hackathon2026
         }
 
         /// <summary>
-        /// Flujo de opción 6: un jurado (identificado por DNI) evalúa un
-        /// proyecto de su categoría. Muestra los proyectos con su estado,
-        /// y para los pendientes de este jurado toma las tres notas
-        /// (0-10), las registra en el proyecto (que recalcula promedios)
-        /// y suma la evaluación al jurado.
+        /// Flujo de opción 6: un mentor o un jurado (identificado por DNI)
+        /// evalúa un proyecto de su categoría. Cualquier mentor o jurado
+        /// puede evaluar los proyectos de SU categoría, pero un mentor no
+        /// puede evaluar el proyecto del equipo que acompaña (sólo los de
+        /// otros equipos). Toma las tres notas (0-10), las registra en el
+        /// proyecto (que recalcula promedios) y suma la evaluación al
+        /// evaluador.
         /// </summary>
         private static void Evaluar()
         {
             Console.WriteLine("=== EVALUACIÓN DE PROYECTOS ===");
 
-            string dniJurado =
-                ValidadorConsola.LeerDni("DNI del jurado: ");
+            string dniEvaluador =
+                ValidadorConsola.LeerDni(
+                    "DNI (mentor o jurado): ");
 
-            MentorJurado jurado =
+            // Puede ser mentor o jurado: ambos evalúan proyectos.
+            MentorJurado evaluador =
                 mentores.FirstOrDefault(
                     m =>
-                        m.Tipo == TipoParticipante.Jurado &&
                         m.Dni != null &&
                         m.Dni.Equals(
-                            dniJurado,
+                            dniEvaluador,
                             StringComparison.OrdinalIgnoreCase));
 
-            if (jurado == null)
+            if (evaluador == null)
             {
                 Console.WriteLine(
-                    "El DNI no corresponde a un jurado registrado.");
+                    "El DNI no corresponde a un mentor o jurado registrado.");
 
                 return;
             }
 
-            // FIX: el jurado solo puede evaluar proyectos de SU categoría.
-            if (!jurado.CategoriaAsignada.HasValue)
+            // Regla: sólo puede actuar dentro de su categoría.
+            if (!evaluador.CategoriaAsignada.HasValue)
             {
                 Console.WriteLine(
-                    "El jurado no tiene categoría asignada.");
+                    "El evaluador no tiene Categoría asignada.");
 
                 return;
             }
@@ -659,15 +681,25 @@ namespace Hackathon2026
                     .Where(c =>
                         c.ProyectoAsignado != null &&
                         c.ProyectoAsignado.Categoria ==
-                            jurado.CategoriaAsignada.Value)
+                            evaluador.CategoriaAsignada.Value)
                     .ToList();
+
+            // Un mentor no evalúa el proyecto del equipo que Acompaña:
+            // sólo proyectos de otros equipos.
+            if (evaluador.Tipo == TipoParticipante.Mentor)
+            {
+                elegibles =
+                    elegibles
+                        .Where(c => c.MentorAsignado != evaluador)
+                        .ToList();
+            }
 
             if (elegibles.Count == 0)
             {
                 Console.WriteLine(
-                    "No hay proyectos para evaluar en la categoría " +
+                    "No hay proyectos aptos para evaluar en la categoría " +
                     CategoriaHelper.Nombre(
-                        jurado.CategoriaAsignada.Value) +
+                        evaluador.CategoriaAsignada.Value) +
                     ".");
 
                 return;
@@ -676,7 +708,7 @@ namespace Hackathon2026
             Console.WriteLine(
                 "\nProyectos de la categoría " +
                 CategoriaHelper.Nombre(
-                    jurado.CategoriaAsignada.Value) +
+                    evaluador.CategoriaAsignada.Value) +
                 ":");
 
             for (int i = 0; i < elegibles.Count; i++)
@@ -695,10 +727,10 @@ namespace Hackathon2026
                     estado =
                         "Evaluado por " +
                         proyecto.Evaluaciones.Count +
-                        " jurado(s). Promedio: " +
+                        " evaluador(es). Promedio: " +
                         proyecto.Promedio.Value.ToString("0.00");
 
-                    if (proyecto.YaEvaluadoPor(dniJurado))
+                    if (proyecto.YaEvaluadoPor(dniEvaluador))
                         estado += " (incluye su evaluación)";
                 }
 
@@ -711,12 +743,13 @@ namespace Hackathon2026
                     estado);
             }
 
-            // FIX: cada jurado puede evaluar todos los proyectos aún si otro
-            // jurado ya lo hizo; la nota final es el promedio de todos.
+            // Cada evaluador puede evaluar todos los proyectos de su
+            // categoría (cada uno una sola vez por proyecto); la nota
+            // final es el promedio de todos los evaluadores.
             List<Competidor> pendientes =
                 elegibles
                     .Where(c =>
-                        !c.ProyectoAsignado.YaEvaluadoPor(dniJurado))
+                        !c.ProyectoAsignado.YaEvaluadoPor(dniEvaluador))
                     .ToList();
 
             if (pendientes.Count == 0)
@@ -756,13 +789,13 @@ namespace Hackathon2026
             proyectoSeleccionado.AgregarEvaluacion(
                 new EvaluacionProyecto
                 {
-                    DniJurado = jurado.Dni,
+                    DniJurado = dniEvaluador,
                     Innovacion = innovacion,
                     Viabilidad = viabilidad,
                     Presentacion = presentacion
                 });
 
-            jurado.IncrementarProyectosEvaluados();
+            evaluador.IncrementarProyectosEvaluados();
 
             Console.WriteLine();
             Console.WriteLine(

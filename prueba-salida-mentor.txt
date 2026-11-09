@@ -1,0 +1,273 @@
+﻿==================================
+         HACKATHON 2026
+==================================
+    1 - Registro Competidor
+    2 - Registro Mentor/Jurado
+    3 - Registro Proyecto
+    4 - Listado Equipos y Proyectos
+    5 - Asignaci├│n Mentores
+    6 - Evaluaci├│n Proyectos
+    7 - Ranking
+    8 - Salir
+
+Seleccionar una Opci├│n: === REGISTRO DE MENTOR/JURADO ===
+DNI: Tipo (1 - Mentor, 2 - Jurado): Email: Nombre y apellido: Tel├®fono: Provincia o pa├¡s: A├▒os de experiencia: Instituci├│n: 
+1 - E-Sports
+2 - IoT Deportivo
+3 - Biomec├ínica
+Categor├¡a: 
+Registro realizado correctamente.
+Tipo: Mentor
+ID de inscripci├│n: M-001
+
+Pulse una tecla...
+==================================
+         HACKATHON 2026
+==================================
+    1 - Registro Competidor
+    2 - Registro Mentor/Jurado
+    3 - Registro Proyecto
+    4 - Listado Equipos y Proyectos
+    5 - Asignaci├│n Mentores
+    6 - Evaluaci├│n Proyectos
+    7 - Ranking
+    8 - Salir
+
+Seleccionar una Opci├│n: === REGISTRO DE COMPETIDOR ===
+DNI: Email: Nombre y apellido: Tel├®fono: Provincia o pa├¡s: Rol dentro del equipo: Nombre del equipo: 
+1 - E-Sports
+2 - IoT Deportivo
+3 - Biomec├ínica
+Categor├¡a: Lenguaje principal: 
+Competidor registrado correctamente.
+ID de inscripci├│n: P-001
+
+Pulse una tecla...
+==================================
+         HACKATHON 2026
+==================================
+    1 - Registro Competidor
+    2 - Registro Mentor/Jurado
+    3 - Registro Proyecto
+    4 - Listado Equipos y Proyectos
+    5 - Asignaci├│n Mentores
+    6 - Evaluaci├│n Proyectos
+    7 - Ranking
+    8 - Salir
+
+Seleccionar una Opci├│n: === REGISTRO DE COMPETIDOR ===
+DNI: Email: Nombre y apellido: Tel├®fono: Provincia o pa├¡s: Rol dentro del equipo: Nombre del equipo: 
+1 - E-Sports
+2 - IoT Deportivo
+3 - Biomec├ínica
+Categor├¡a: Lenguaje principal: 
+Competidor registrado correctamente.
+ID de inscripci├│n: P-002
+
+Pulse una tecla...
+==================================
+         HACKATHON 2026
+==================================
+    1 - Registro Competidor
+    2 - Registro Mentor/Jurado
+    3 - Registro Proyecto
+    4 - Listado Equipos y Proyectos
+    5 - Asignaci├│n Mentores
+    6 - Evaluaci├│n Proyectos
+    7 - Ranking
+    8 - Salir
+
+Seleccionar una Opci├│n: === REGISTRO DE PROYECTO ===
+T├¡tulo del proyecto: Descripci├│n del proyecto: URL del repositorio: 
+1 - E-Sports
+2 - IoT Deportivo
+3 - Biomec├ínica
+Categor├¡a: 
+Competidores disponibles:
+1 - Marco Polo | Equipo: Equipo Gamma
+2 - Nadia Cruz | Equipo: Equipo Delta
+Seleccione el competidor: 
+Proyecto registrado y asignado correctamente.
+
+Pulse una tecla...
+==================================
+         HACKATHON 2026
+==================================
+    1 - Registro Competidor
+    2 - Registro Mentor/Jurado
+    3 - Registro Proyecto
+    4 - Listado Equipos y Proyectos
+    5 - Asignaci├│n Mentores
+    6 - Evaluaci├│n Proyectos
+    7 - Ranking
+    8 - Salir
+
+Seleccionar una Opci├│n: === REGISTRO DE PROYECTO ===
+T├¡tulo del proyecto: Descripci├│n del proyecto: URL del repositorio: 
+1 - E-Sports
+2 - IoT Deportivo
+3 - Biomec├ínica
+Categor├¡a: 
+Competidores disponibles:
+1 - Nadia Cruz | Equipo: Equipo Delta
+Seleccione el competidor: 
+Proyecto registrado y asignado correctamente.
+
+Pulse una tecla...
+==================================
+         HACKATHON 2026
+==================================
+    1 - Registro Competidor
+    2 - Registro Mentor/Jurado
+    3 - Registro Proyecto
+    4 - Listado Equipos y Proyectos
+    5 - Asignaci├│n Mentores
+    6 - Evaluaci├│n Proyectos
+    7 - Ranking
+    8 - Salir
+
+Seleccionar una Opci├│n: === ASIGNACI├ôN DE MENTORES ===
+Se asign├│ el mentor Pedro Sanz al competidor Marco Polo
+Se asign├│ el mentor Pedro Sanz al competidor Nadia Cruz
+
+Pulse una tecla...
+==================================
+         HACKATHON 2026
+==================================
+    1 - Registro Competidor
+    2 - Registro Mentor/Jurado
+    3 - Registro Proyecto
+    4 - Listado Equipos y Proyectos
+    5 - Asignaci├│n Mentores
+    6 - Evaluaci├│n Proyectos
+    7 - Ranking
+    8 - Salir
+
+Seleccionar una Opci├│n: === REGISTRO DE COMPETIDOR ===
+DNI: Email: Nombre y apellido: Tel├®fono: Provincia o pa├¡s: Rol dentro del equipo: Nombre del equipo: 
+1 - E-Sports
+2 - IoT Deportivo
+3 - Biomec├ínica
+Categor├¡a: Lenguaje principal: 
+Competidor registrado correctamente.
+ID de inscripci├│n: P-003
+
+Pulse una tecla...
+==================================
+         HACKATHON 2026
+==================================
+    1 - Registro Competidor
+    2 - Registro Mentor/Jurado
+    3 - Registro Proyecto
+    4 - Listado Equipos y Proyectos
+    5 - Asignaci├│n Mentores
+    6 - Evaluaci├│n Proyectos
+    7 - Ranking
+    8 - Salir
+
+Seleccionar una Opci├│n: === REGISTRO DE PROYECTO ===
+T├¡tulo del proyecto: Descripci├│n del proyecto: URL del repositorio: 
+1 - E-Sports
+2 - IoT Deportivo
+3 - Biomec├ínica
+Categor├¡a: 
+Competidores disponibles:
+1 - Leo Vega | Equipo: Equipo Epsilon
+Seleccione el competidor: 
+Proyecto registrado y asignado correctamente.
+
+Pulse una tecla...
+==================================
+         HACKATHON 2026
+==================================
+    1 - Registro Competidor
+    2 - Registro Mentor/Jurado
+    3 - Registro Proyecto
+    4 - Listado Equipos y Proyectos
+    5 - Asignaci├│n Mentores
+    6 - Evaluaci├│n Proyectos
+    7 - Ranking
+    8 - Salir
+
+Seleccionar una Opci├│n: === EVALUACI├ôN DE PROYECTOS ===
+DNI (mentor o jurado): 
+Proyectos de la categor├¡a Biomec├ínica:
+1 - SensorRun | Competidor: Leo Vega | Pendiente de evaluaci├│n
+
+Seleccione el proyecto a evaluar: 
+Evaluando proyecto: SensorRun
+Innovaci├│n (0-10): Viabilidad (0-10): Presentaci├│n (0-10): 
+Proyecto evaluado correctamente.
+Promedio registrado: 8,50
+
+Pulse una tecla...
+==================================
+         HACKATHON 2026
+==================================
+    1 - Registro Competidor
+    2 - Registro Mentor/Jurado
+    3 - Registro Proyecto
+    4 - Listado Equipos y Proyectos
+    5 - Asignaci├│n Mentores
+    6 - Evaluaci├│n Proyectos
+    7 - Ranking
+    8 - Salir
+
+Seleccionar una Opci├│n: === RANKING DE PROYECTOS ===
+1. SensorRun - Puntaje: 8,35 (1 evaluacion(es))
+
+Pulse una tecla...
+==================================
+         HACKATHON 2026
+==================================
+    1 - Registro Competidor
+    2 - Registro Mentor/Jurado
+    3 - Registro Proyecto
+    4 - Listado Equipos y Proyectos
+    5 - Asignaci├│n Mentores
+    6 - Evaluaci├│n Proyectos
+    7 - Ranking
+    8 - Salir
+
+Seleccionar una Opci├│n: === EVALUACI├ôN DE PROYECTOS ===
+DNI (mentor o jurado): 
+Proyectos de la categor├¡a Biomec├ínica:
+1 - SensorRun | Competidor: Leo Vega | Evaluado por 1 evaluador(es). Promedio: 8,50 (incluye su evaluaci├│n)
+
+Ya evalu├│ todos los proyectos de su categor├¡a.
+
+Pulse una tecla...
+==================================
+         HACKATHON 2026
+==================================
+    1 - Registro Competidor
+    2 - Registro Mentor/Jurado
+    3 - Registro Proyecto
+    4 - Listado Equipos y Proyectos
+    5 - Asignaci├│n Mentores
+    6 - Evaluaci├│n Proyectos
+    7 - Ranking
+    8 - Salir
+
+Seleccionar una Opci├│n: === EVALUACI├ôN DE PROYECTOS ===
+DNI (mentor o jurado): DNI inv├ílido. Debe contener entre 7 y 8 n├║meros.
+DNI (mentor o jurado): DNI inv├ílido. Debe contener entre 7 y 8 n├║meros.
+DNI (mentor o jurado): DNI inv├ílido. Debe contener entre 7 y 8 n├║meros.
+
+Ya se utilizaron los 3 intentos disponibles. Debe volver al men├║ principal.
+
+Pulse una tecla...
+==================================
+         HACKATHON 2026
+==================================
+    1 - Registro Competidor
+    2 - Registro Mentor/Jurado
+    3 - Registro Proyecto
+    4 - Listado Equipos y Proyectos
+    5 - Asignaci├│n Mentores
+    6 - Evaluaci├│n Proyectos
+    7 - Ranking
+    8 - Salir
+
+Seleccionar una Opci├│n: 
+Datos guardados en: datos-hackathon.json

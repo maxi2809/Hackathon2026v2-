@@ -1,0 +1,85 @@
+2
+27777888
+1
+pedro@mail.com
+Pedro Sanz
+11 5555 6666
+Salta
+7
+UNSa
+3
+v
+1
+40111222
+marco@mail.com
+Marco Polo
+351 999 8888
+La Rioja
+Tester
+Equipo Gamma
+3
+Java
+v
+1
+40222333
+nadia@mail.com
+Nadia Cruz
+351 888 7777
+Neuquen
+Analista
+Equipo Delta
+3
+Kotlin
+v
+3
+TestEOG
+Prueba EOG
+https://github.com/gamma/testeog
+3
+1
+v
+3
+StridePro
+Mapeo de salto
+https://github.com/delta/stridepro
+3
+1
+v
+5
+v
+1
+40333444
+leo@mail.com
+Leo Vega
+11 777 8888
+Salta
+Backend
+Equipo Epsilon
+3
+Go
+v
+3
+SensorRun
+Telemetria de carrera
+https://github.com/epsilon/sensorrun
+3
+1
+v
+6
+27777888
+1
+8,5
+8
+9
+v
+7
+v
+6
+27777888
+v
+6
+abc
+abc
+abc
+v
+8

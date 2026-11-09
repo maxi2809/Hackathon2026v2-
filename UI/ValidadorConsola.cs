@@ -5,43 +5,52 @@ using System.Text.RegularExpressions;
 namespace Hackathon2026
 {
     /// <summary>
-    /// Capa de UI de entrada: centraliza la lectura de datos desde la
-    /// consola. Todos los métodos "Leer..." no devuelven el control al
-    /// invocador hasta que el usuario ingresa un valor válido, por lo que
-    /// el resto del programa no necesita validar lo que entra.
+    /// Capa de entrada (UI): centraliza la lectura de datos desde la
+    /// consola. Todos los métodos "Leer..." permiten hasta
+    /// <see cref="MaximoIntentos"/> ingresos; si en ninguno obtienen un valor
+    /// válido, lanzan <see cref="IntentosAgotadosException"/> para abortar el
+    /// flujo actual y regresar al menú principal con el aviso correspondiente.
+    /// Si el valor es válido, se devuelve sin que el resto del programa
+    /// necesite revalidarlo.
     /// </summary>
     public static class ValidadorConsola
     {
         /// <summary>
-        /// Pide un texto cualquiera, repitiendo mientras esté vacío o con
-        /// sólo espacios. Devuelve el texto sin espacios en los extremos.
+        /// Cantidad máxima de intentos por ingreso antes de abortar el flujo.
+        /// </summary>
+        public const int MaximoIntentos = 3;
+
+        /// <summary>
+        /// Pide un texto cualquiera con hasta 3 intentos mientras esté vacío o
+        /// con sólo espacios. Devuelve el texto sin espacios en los extremos.
         /// </summary>
         public static string LeerTexto(string mensaje)
         {
-            string valor;
-
-            do
+            for (int intento = 1; intento <= MaximoIntentos; intento++)
             {
                 Console.Write(mensaje);
-                valor = Console.ReadLine() ?? string.Empty;
-            }
-            while (string.IsNullOrWhiteSpace(valor));
+                string valor = Console.ReadLine() ?? string.Empty;
 
-            return valor.Trim();
+                if (!string.IsNullOrWhiteSpace(valor))
+                    return valor.Trim();
+
+                Console.WriteLine("Texto inválido.");
+            }
+
+            throw new IntentosAgotadosException();
         }
 
         /// <summary>
-        /// Pide un nombre propio: sin vacío y compuesto sólo por letras y
-        /// espacios. Repite el ingreso hasta ser válido.
+        /// Pide un nombre propio (sin vacío y compuesto sólo por letras y
+        /// espacios) con hasta 3 intentos. Lanza
+        /// <see cref="IntentosAgotadosException"/> si fallan tres.
         /// </summary>
         public static string LeerNombre(string mensaje)
         {
-            string nombre;
-
-            do
+            for (int intento = 1; intento <= MaximoIntentos; intento++)
             {
                 Console.Write(mensaje);
-                nombre = Console.ReadLine() ?? string.Empty;
+                string nombre = Console.ReadLine() ?? string.Empty;
 
                 bool valido = !string.IsNullOrWhiteSpace(nombre);
 
@@ -59,21 +68,22 @@ namespace Hackathon2026
 
                 Console.WriteLine("Nombre inválido.");
             }
-            while (true);
+
+            throw new IntentosAgotadosException();
         }
 
         /// <summary>
-        /// Pide un DNI: sólo dígitos, entre 7 y 8 caracteres. Se devuelve
-        /// como string para no perder ceros a la izquierda.
+        /// Pide un DNI (sólo dígitos, entre 7 y 8 caracteres) con hasta
+        /// 3 intentos. Se devuelve como string para no perder ceros a la
+        /// izquierda. Lanza <see cref="IntentosAgotadosException"/> si
+        /// fallan tres.
         /// </summary>
         public static string LeerDni(string mensaje)
         {
-            string dni;
-
-            do
+            for (int intento = 1; intento <= MaximoIntentos; intento++)
             {
                 Console.Write(mensaje);
-                dni = (Console.ReadLine() ?? string.Empty).Trim();
+                string dni = (Console.ReadLine() ?? string.Empty).Trim();
 
                 long numero;
 
@@ -87,21 +97,21 @@ namespace Hackathon2026
                 Console.WriteLine(
                     "DNI inválido. Debe contener entre 7 y 8 números.");
             }
-            while (true);
+
+            throw new IntentosAgotadosException();
         }
 
         /// <summary>
-        /// Pide un correo con formato básico
-        /// "algo@algo.algo" (validación por expresión regular).
+        /// Pide un correo con formato básico "algo@algo.algo" con hasta 3
+        /// intentos (validación por expresión regular). Lanza
+        /// <see cref="IntentosAgotadosException"/> si fallan tres.
         /// </summary>
         public static string LeerEmail(string mensaje)
         {
-            string email;
-
-            do
+            for (int intento = 1; intento <= MaximoIntentos; intento++)
             {
                 Console.Write(mensaje);
-                email = (Console.ReadLine() ?? string.Empty).Trim();
+                string email = (Console.ReadLine() ?? string.Empty).Trim();
 
                 if (Regex.IsMatch(
                     email,
@@ -112,23 +122,23 @@ namespace Hackathon2026
 
                 Console.WriteLine("Email inválido.");
             }
-            while (true);
+
+            throw new IntentosAgotadosException();
         }
 
         /// <summary>
-        /// Pide un teléfono y valida los dígitos que quedan al quitar
-        /// formatos (+, guiones, espacios y paréntesis): entre 8 y 15
-        /// dígitos. El valor devuelto conserva el formato original.
+        /// Pide un teléfono con hasta 3 intentos y valida los dígitos que
+        /// quedan al quitar formatos (+, guiones, espacios y paréntesis):
+        /// entre 8 y 15 dígitos. Lanza
+        /// <see cref="IntentosAgotadosException"/> si fallan tres.
         /// </summary>
         public static string LeerTelefono(string mensaje)
         {
-            string telefono;
-
-            do
+            for (int intento = 1; intento <= MaximoIntentos; intento++)
             {
                 Console.Write(mensaje);
 
-                telefono = Console.ReadLine() ?? string.Empty;
+                string telefono = Console.ReadLine() ?? string.Empty;
 
                 string limpio = telefono
                     .Replace("+", "")
@@ -148,24 +158,25 @@ namespace Hackathon2026
 
                 Console.WriteLine("Teléfono inválido.");
             }
-            while (true);
+
+            throw new IntentosAgotadosException();
         }
 
         /// <summary>
-        /// Pide un número entero dentro del rango [minimo, maximo],
-        /// repitiendo hasta obtener un valor válido. Se usa para las
-        /// opciones del menú y otros valores numéricos.
+        /// Pide un número entero dentro del rango [minimo, maximo] con hasta
+        /// 3 intentos; se usa para las opciones del menú y otros números.
+        /// Lanza <see cref="IntentosAgotadosException"/> si fallan tres.
         /// </summary>
         public static int LeerEntero(
             string mensaje,
             int minimo,
             int maximo)
         {
-            int valor;
-
-            do
+            for (int intento = 1; intento <= MaximoIntentos; intento++)
             {
                 Console.Write(mensaje);
+
+                int valor;
 
                 if (int.TryParse(
                     Console.ReadLine(),
@@ -178,22 +189,22 @@ namespace Hackathon2026
 
                 Console.WriteLine("Valor inválido.");
             }
-            while (true);
+
+            throw new IntentosAgotadosException();
         }
 
         /// <summary>
-        /// Pide un número decimal dentro del rango [minimo, maximo].
-        /// Acepta coma o punto como separador decimal (cualquier cultura).
-        /// Se usa para las notas de evaluación.
+        /// Pide un número decimal dentro del rango [minimo, maximo] con hasta
+        /// 3 intentos. Acepta coma o punto como separador decimal
+        /// (cualquier cultura). Lanza
+        /// <see cref="IntentosAgotadosException"/> si fallan tres.
         /// </summary>
         public static double LeerDouble(
             string mensaje,
             double minimo,
             double maximo)
         {
-            double valor;
-
-            do
+            for (int intento = 1; intento <= MaximoIntentos; intento++)
             {
                 Console.Write(mensaje);
 
@@ -201,6 +212,8 @@ namespace Hackathon2026
                     .Trim()
                     .Replace(' ', '.')
                     .Replace(',', '.');
+
+                double valor;
 
                 if (double.TryParse(
                         entrada,
@@ -215,12 +228,14 @@ namespace Hackathon2026
 
                 Console.WriteLine("Número inválido.");
             }
-            while (true);
+
+            throw new IntentosAgotadosException();
         }
 
         /// <summary>
-        /// Muestra las opciones de categoría y devuelve la elegida
-        /// (siempre es un valor válido de <see cref="CategoriaHackathon"/>).
+        /// Muestra las opciones de categoría y devuelve la elegida con hasta
+        /// 3 intentos (siempre es un valor válido de
+        /// <see cref="CategoriaHackathon"/>).
         /// </summary>
         public static CategoriaHackathon LeerCategoria()
         {
@@ -238,17 +253,16 @@ namespace Hackathon2026
         }
 
         /// <summary>
-        /// Pide un texto sin vacío y sin dígitos (para nombres de equipo,
-        /// provincias, etc.). Reintenta hasta devolver un valor correcto.
+        /// Pide un texto (sin vacío y sin dígitos) con hasta 3 intentos
+        /// (para nombres de equipo, provincias, etc.). Lanza
+        /// <see cref="IntentosAgotadosException"/> si fallan tres.
         /// </summary>
         public static string LeerTextoSinNumeros(string mensaje)
         {
-            string valor;
-
-            do
+            for (int intento = 1; intento <= MaximoIntentos; intento++)
             {
                 Console.Write(mensaje);
-                valor = Console.ReadLine() ?? string.Empty;
+                string valor = Console.ReadLine() ?? string.Empty;
 
                 if (!string.IsNullOrWhiteSpace(valor))
                 {
@@ -270,7 +284,8 @@ namespace Hackathon2026
                 Console.WriteLine(
                     "El valor no puede estar vacío ni contener números.");
             }
-            while (true);
+
+            throw new IntentosAgotadosException();
         }
     }
 }
