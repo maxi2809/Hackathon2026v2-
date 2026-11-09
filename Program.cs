@@ -6,6 +6,16 @@ using System.Text.RegularExpressions;
 
 namespace Hackathon2026
 {
+    /// <summary>
+    /// Clase de la aplicación: contiene el menú principal y todos los
+    /// flujos de consola (registrador, listado, asignaciones, evaluación
+    /// y ranking), además de la orquestación de carga/persistencia.
+    /// </summary>
+    /// <remarks>
+    /// El estado en memoria vive aquí (listas estáticas); las reglas del
+    /// negocio viven en <c>Models</c> y la persistencia en
+    /// <c>Persistencia</c>: el Programa sólo coordina.
+    /// </remarks>
     internal class Program
     {
         private static int ultimoIdMentorJurado;
@@ -23,6 +33,11 @@ namespace Hackathon2026
         private const string RutaDatos = PersistenciaJson.RutaPorDefecto;
         private static string avisoCarga;
 
+        /// <summary>
+        /// Punto de entrada: carga los datos persistidos, muestra el menú
+        /// principal en un bucle y despacha cada opción a su flujo.
+        /// Cada opción modificadora persiste el estado; al salir también.
+        /// </summary>
         private static void Main(string[] args)
         {
             CargarDatosIniciales();
@@ -130,12 +145,22 @@ namespace Hackathon2026
             while (opcion != 8);
         }
 
+        /// <summary>
+        /// Genera el siguiente ID de inscripción para competidores
+        /// ("P-001", "P-002", ...) a partir del contador interno, que se
+        /// persiste para no repetir IDs después de recargar.
+        /// </summary>
         private static string ObtenerIdCompetidor()
         {
             ultimoIdCompetidor++;
             return "P-" + ultimoIdCompetidor.ToString("D3");
         }
 
+        /// <summary>
+        /// Genera el siguiente ID de inscripción para mentores/jurados
+        /// ("M-001", "M-002", ...) a partir del contador interno, que se
+        /// persiste para no repetir IDs después de recargar.
+        /// </summary>
         private static string ObtenerIdMentorJurado()
         {
             ultimoIdMentorJurado++;
@@ -144,6 +169,11 @@ namespace Hackathon2026
 
         // FIX: la verificación de duplicados estaba repetida (y con el
         // paréntesis faltante) en dos lugares. Ahora es un único método.
+        /// <summary>
+        /// Indica si ya existe una persona (competidor o mentor/jurado)
+        /// registrada con el DNI dado. Se usa para rechazar registros
+        /// duplicados al dar de alta a una persona.
+        /// </summary>
         private static bool ExisteDni(string dni)
         {
             return competidores.Any(c =>
@@ -158,6 +188,10 @@ namespace Hackathon2026
                            StringComparison.OrdinalIgnoreCase));
         }
 
+        /// <summary>
+        /// Indica si ya existe una persona registrada con el email dado
+        /// (comparación sin distinguir mayúsculas).
+        /// </summary>
         private static bool ExisteEmail(string email)
         {
             return competidores.Any(c =>
@@ -172,6 +206,11 @@ namespace Hackathon2026
                            StringComparison.OrdinalIgnoreCase));
         }
 
+        /// <summary>
+        /// Flujo de opción 1: registra un nuevo competidor. Verifica DNI
+        /// y email únicos, toma los demás datos por consola y lo agrega a
+        /// la lista en memoria.
+        /// </summary>
         private static void RegistrarCompetidor()
         {
             Console.WriteLine("=== REGISTRO DE COMPETIDOR ===");
@@ -224,6 +263,11 @@ namespace Hackathon2026
                 competidor.IdInscripcion);
         }
 
+        /// <summary>
+        /// Flujo de opción 2: registra un mentor o un jurado. Verifica
+        /// DNI/email únicos, pide tipo, experiencia y categoría, y agrega
+        /// el nuevo MentorJurado a la lista en memoria.
+        /// </summary>
         private static void RegistrarMentor()
         {
             Console.WriteLine("=== REGISTRO DE MENTOR/JURADO ===");
@@ -289,6 +333,11 @@ namespace Hackathon2026
                 mentor.IdInscripcion);
         }
 
+        /// <summary>
+        /// Flujo de opción 3: inscribe un proyecto nuevo (crea la subclase
+        /// concreta según la categoría), lista los competidores sin
+        /// proyecto de esa categoría y asigna el proyecto al elegido.
+        /// </summary>
         private static void RegistrarProyecto()
         {
             Console.WriteLine("=== REGISTRO DE PROYECTO ===");
@@ -386,6 +435,12 @@ namespace Hackathon2026
                 "Proyecto registrado y asignado correctamente.");
         }
 
+        /// <summary>
+        /// Flujo de opción 4: consulta. Muestra dos listados: equipos con
+        /// sus proyectos y mentores, por un lado; mentores/jurados con su
+        /// contador de evaluaciones; por otro, los proyectos con su
+        /// estado de evaluación (promedio y puntaje, o "Pendiente").
+        /// </summary>
         private static void Listar()
         {
             Console.WriteLine(
@@ -487,6 +542,13 @@ namespace Hackathon2026
             }
         }
 
+        /// <summary>
+        /// Flujo de opción 5: reparte mentores entre los competidores que
+        /// tienen proyecto. Para cada competidor sin mentor elige, de su
+        /// categoría, al mentor MENOS cargado (balanceo) y lo asigna
+        /// mediante el método del dominio, que valida e incrementa la
+        /// carga del mentor.
+        /// </summary>
         private static void AsignarMentores()
         {
             Console.WriteLine("=== ASIGNACIÓN DE MENTORES ===");
@@ -552,6 +614,13 @@ namespace Hackathon2026
             }
         }
 
+        /// <summary>
+        /// Flujo de opción 6: un jurado (identificado por DNI) evalúa un
+        /// proyecto de su categoría. Muestra los proyectos con su estado,
+        /// y para los pendientes de este jurado toma las tres notas
+        /// (0-10), las registra en el proyecto (que recalcula promedios)
+        /// y suma la evaluación al jurado.
+        /// </summary>
         private static void Evaluar()
         {
             Console.WriteLine("=== EVALUACIÓN DE PROYECTOS ===");
@@ -703,6 +772,13 @@ namespace Hackathon2026
                 proyectoSeleccionado.Promedio.Value.ToString("0.00"));
         }
 
+        /// <summary>
+        /// Flujo de opción 7: consulta. Ordena los proyectos evaluados por
+        /// puntaje final (respetando el tipo concreto de cada proyecto con
+        /// sus pesos de categoría) y muestra el ranking con posiciones;
+        /// los empates comparten posición, y los proyectos sin evaluar no
+        /// participan.
+        /// </summary>
         private static void MostrarRanking()
         {
             if (proyectos.Count == 0)
@@ -759,6 +835,11 @@ namespace Hackathon2026
 
         // ===== Persistencia =====
 
+        /// <summary>
+        /// Al inicio del programa: si existe el archivo de datos, carga el
+        /// estado y lo reconstruye; si falla, arranca con listas vacías y
+        /// deja el aviso para mostrar en el primer menú.
+        /// </summary>
         private static void CargarDatosIniciales()
         {
             try
@@ -791,6 +872,11 @@ namespace Hackathon2026
             }
         }
 
+        /// <summary>
+        /// Delega en la capa de persistencia el guardado del estado
+        /// completo (con los contadores de ID). Silencioso salvo error:
+        /// se llama tras cada operación modificadora y al salir.
+        /// </summary>
         private static void PersistirDatos()
         {
             try
@@ -812,10 +898,21 @@ namespace Hackathon2026
             }
         }
 
-        // Reconstruye el estado del dominio a partir del DTO. Se reusan los
-        // métodos reales del dominio (AsignarProyecto, AsignarMentor,
-        // AgregarEvaluación), de modo que los contadores y las validaciones
-        // se reproducen de forma idéntica al flujo normal del programa.
+        /// <summary>
+        /// Reconstruye el estado del dominio desde el DTO cargado:
+        /// primero se restauran los mentores/jurados y competidores; luego
+        /// los proyectos (creando la subclase según el tipo guardado) con
+        /// sus evaluaciones; por último se vuelve a enlazar cada
+        /// competidor con su mentor.
+        /// </summary>
+        /// <remarks>
+        /// Las relaciones se vuelven a crear con los métodos reales del
+        /// dominio (AsignarProyecto, AsignarMentor, AgregarEvaluacion), de
+        /// modo que las validaciones y los contadores (EquiposAsignados,
+        /// ProyectosEvaluados) se reproducen de forma idéntica al flujo
+        /// normal del programa. (ENCAPSULAMIENTO: el estado protegido se
+        /// restaura por la única vía válida, no accediendo a los datos).
+        /// </remarks>
         private static void ReconstruirEstado(DatosHackathonDto datos)
         {
             ultimoIdCompetidor = datos.UltimoIdCompetidor;
