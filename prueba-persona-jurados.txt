@@ -1,98 +1,95 @@
+1
+2
 2
 30111222
-juradotodos@mail.com
 Ana Torres
-2
-+54 9 11 5555-1234
-Buenos Aires
+juradotodos@mail.com
+Frontend
 6
 UBA
 v
-2
-27999888
-mentor1@mail.com
-Luis Gomez
 1
-11 4444 5555
-Cordoba
-10
-UNC
-3
+2
+1
+25555666
+Franco Ruiz
+mentor2@mail.com
+1
+Mobile
+4
+ITBA
 v
 1
+1
 40111222
-marco@mail.com
 Marco Polo
-351 999 8888
+marco@mail.com
 La Rioja
 Tester
 Equipo Gamma
 3
 Java
+Gamma
+Prueba eog
+https://github.com/gamma/gamma
 v
 1
+1
 40222333
-nadia@mail.com
 Nadia Cruz
-351 888 7777
+nadia@mail.com
 Neuquen
 Analista
 Equipo Delta
 1
 Kotlin
-v
-3
-Gamma
-Prueba eog
-https://github.com/gamma/gamma
-3
-1
-v
-3
-Delta
+DeltaStrat
 Validador de partida
-https://github.com/delta/delta
-1
-1
+https://github.com/delta/deltastrat
 v
-5
+3
 v
-6
+4
 30111222
 1
 8,5
 8
 9
 v
-6
+4
 30111222
 1
 7
 7
 7
 v
-6
-27999888
+4
+25555666
 v
-7
+5
 v
+1
 1
 40111222
 40444555
+Sofi Ruiz
 marco@mail.com
 40555666
-sofi@mail.com
 Sofi Ruiz
-11 333 4444
+sofi@mail.com
 La Pampa
 Tester
 Equipo Eta
 3
 C Sharp
+EtaApp
+Analisis de patinaje
+https://github.com/eta/etaapp
+v
+1
+1
+abc
+abc
+abc
 v
 6
-abc
-abc
-abc
-v
-8

@@ -86,6 +86,7 @@ namespace Hackathon2026
         public string ProvinciaPais { get; set; }
         public string Rol { get; set; }
         public int Tipo { get; set; }
+        public string Expertise { get; set; }
         public int Experiencia { get; set; }
         public string Institucion { get; set; }
 

@@ -1,115 +1,134 @@
+1
+1
+40111222
+Marco Polo
+marco@mail.com
+La Rioja
+Tester
+Equipo Gamma
+3
+Java
+SuitSense
+Deteccion de pisadas
+https://github.com/gamma/suitsense
+v
+1
+1
+40222333
+Nadia Cruz
+nadia@mail.com
+Neuquen
+Analista
+Equipo Delta
+1
+Kotlin
+PartidaViva
+Validador de partida
+https://github.com/delta/partidaviva
+v
+1
+1
+40333444
+Pablo Diaz
+pablo@mail.com
+Salta
+Backend
+Equipo Epsilon
+3
+Go
+SensorRun
+Telemetria de carrera
+https://github.com/epsilon/sensorrun
+v
+1
+2
+1
+27999888
+Luis Gomez
+mentor1@mail.com
+3
+IA aplicada
+10
+UNC
+v
+1
+2
+1
+25555666
+Franco Ruiz
+mentor2@mail.com
+1
+Backend
+4
+ITBA
+v
+1
+2
+1
+28888999
+Diego Perez
+mentor3@mail.com
+3
+Arquitectura
+6
+ITCA
+v
+1
+2
 2
 30111222
-jurado1@mail.com
 Ana Torres
-2
-+54 9 11 5555-1234
-Buenos Aires
+jurado1@mail.com
+Frontend
 6
 UBA
 v
+1
 2
-27999888
-mentor1@mail.com
-Luis Gomez
-1
-11 4444 5555
-Cordoba
-10
-UNC
-3
-v
-2
-25555666
-mentor2@mail.com
-Franco Ruiz
-1
-351 555 0000
-Santa Fe
-4
-ITBA
-3
-v
-1
-36444555
-maria@mail.com
-Maria Lopez
-351 555 1234
-Santa Fe
-Desarrolladora
-Equipo Alpha
-3
-C Sharp
-v
-1
-38123456
-pablo@mail.com
-Pablo Diaz
-351 555 9876
-Mendoza
-Tester
-Equipo Beta
-3
-Python
-v
-1
-36444555
-36444555
-36444555
-v
-3
-SuitSense
-Analisis de zancada
-https://github.com/equipoalpha/suitsense
-3
-1
-v
-3
-StrideLab
-Sensor de planta
-https://github.com/equipobeta/stridelab
-3
-1
-v
-5
-v
-6
-30111222
-1
-8,5
-7,5
-9
-v
-7
-v
-6
-30111222
-1
-6
-6
-6
-v
-7
-v
 2
 29876543
-jurado2@mail.com
 Sofia Diaz
-2
-11 2222 3333
-Tucuman
+jurado2@mail.com
+Base de datos
 8
 CONICET
 v
-6
-29876543
-1
-9
-9
-9
-v
-7
+3
 v
 4
+27999888
+1
+8,5
+8,2
+9
 v
+4
+30111222
+1
+9
 8
+9
+v
+4
+30111222
+1
+9
+8,5
+9
+v
+4
+29876543
+1
+8
+9
+8,5
+v
+5
+v
+1
+1
+40111222
+40111222
+40111222
+v
+6

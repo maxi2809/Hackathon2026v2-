@@ -127,42 +127,6 @@ namespace Hackathon2026
         }
 
         /// <summary>
-        /// Pide un teléfono con hasta 3 intentos y valida los dígitos que
-        /// quedan al quitar formatos (+, guiones, espacios y paréntesis):
-        /// entre 8 y 15 dígitos. Lanza
-        /// <see cref="IntentosAgotadosException"/> si fallan tres.
-        /// </summary>
-        public static string LeerTelefono(string mensaje)
-        {
-            for (int intento = 1; intento <= MaximoIntentos; intento++)
-            {
-                Console.Write(mensaje);
-
-                string telefono = Console.ReadLine() ?? string.Empty;
-
-                string limpio = telefono
-                    .Replace("+", "")
-                    .Replace("-", "")
-                    .Replace(" ", "")
-                    .Replace("(", "")
-                    .Replace(")", "");
-
-                long numero;
-
-                if (long.TryParse(limpio, out numero) &&
-                    limpio.Length >= 8 &&
-                    limpio.Length <= 15)
-                {
-                    return telefono;
-                }
-
-                Console.WriteLine("Teléfono inválido.");
-            }
-
-            throw new IntentosAgotadosException();
-        }
-
-        /// <summary>
         /// Pide un número entero dentro del rango [minimo, maximo] con hasta
         /// 3 intentos; se usa para las opciones del menú y otros números.
         /// Lanza <see cref="IntentosAgotadosException"/> si fallan tres.

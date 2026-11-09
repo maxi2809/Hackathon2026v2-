@@ -13,6 +13,13 @@ namespace Hackathon2026
     public class MentorJurado : ParticipanteHackathon
     {
         public TipoParticipante Tipo { get; set; }
+
+        /// <summary>
+        /// Área de especialidad (expertise) de la persona, exigida por la
+        /// consigna como campo propio de MentorJurado.
+        /// </summary>
+        public string Expertise { get; set; }
+
         public int Experiencia { get; set; }
         public string Institucion { get; set; }
 

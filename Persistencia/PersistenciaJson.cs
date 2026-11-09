@@ -102,6 +102,7 @@ namespace Hackathon2026
                     ProvinciaPais = mentor.ProvinciaPais,
                     Rol = mentor.Rol,
                     Tipo = (int)mentor.Tipo,
+                    Expertise = mentor.Expertise,
                     Experiencia = mentor.Experiencia,
                     Institucion = mentor.Institucion,
                     CategoriaAsignada = mentor.CategoriaAsignada.HasValue
