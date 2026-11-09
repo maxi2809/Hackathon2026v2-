@@ -1,19 +1,18 @@
 2
 30111222
-2
 jurado1@mail.com
 Ana Torres
+2
 +54 9 11 5555-1234
 Buenos Aires
 6
 UBA
-3
 v
 2
 27999888
-1
 mentor1@mail.com
 Luis Gomez
+1
 11 4444 5555
 Cordoba
 10
@@ -22,9 +21,9 @@ UNC
 v
 2
 25555666
-1
 mentor2@mail.com
 Franco Ruiz
+1
 351 555 0000
 Santa Fe
 4
@@ -55,10 +54,8 @@ Python
 v
 1
 36444555
-v
-1
-31222333
-maria@mail.com
+36444555
+36444555
 v
 3
 SuitSense
@@ -96,14 +93,13 @@ v
 v
 2
 29876543
-2
 jurado2@mail.com
 Sofia Diaz
+2
 11 2222 3333
 Tucuman
 8
 CONICET
-3
 v
 6
 29876543

@@ -196,69 +196,99 @@ namespace Hackathon2026
         private static bool ExisteDni(string dni)
         {
             return competidores.Any(c =>
-                       c.Dni != null &&
-                       c.Dni.Equals(
-                           dni,
-                           StringComparison.OrdinalIgnoreCase)) ||
+                       c.Persona != null &&
+                       c.Persona.MismoDni(dni)) ||
                    mentores.Any(m =>
-                       m.Dni != null &&
-                       m.Dni.Equals(
-                           dni,
-                           StringComparison.OrdinalIgnoreCase));
+                       m.Persona != null &&
+                       m.Persona.MismoDni(dni));
         }
 
         /// <summary>
         /// Indica si ya existe una persona registrada con el email dado
-        /// (comparación sin distinguir mayúsculas).
+        /// (la comparación vive en <see cref="PersonaDatos"/>).
         /// </summary>
         private static bool ExisteEmail(string email)
         {
             return competidores.Any(c =>
-                       c.Email != null &&
-                       c.Email.Equals(
-                           email,
-                           StringComparison.OrdinalIgnoreCase)) ||
+                       c.Persona != null &&
+                       c.Persona.MismoEmail(email)) ||
                    mentores.Any(m =>
-                       m.Email != null &&
-                       m.Email.Equals(
-                           email,
-                           StringComparison.OrdinalIgnoreCase));
+                       m.Persona != null &&
+                       m.Persona.MismoEmail(email));
         }
 
         /// <summary>
-        /// Flujo de opción 1: registra un nuevo competidor. Verifica DNI
-        /// y email únicos, toma los demás datos por consola y lo agrega a
-        /// la lista en memoria.
+        /// Parte común a los tres roles (competidor, mentor y jurado):
+        /// lee DNI, email y nombre construyendo el
+        /// <see cref="PersonaDatos"/> compartido. Valida que DNI y email
+        /// no estén ya registrados, con hasta 3 intentos: en cada
+        /// reintento se vuelve a preguntar desde el DNI.
+        /// </summary>
+        /// <returns>Los datos comunes de la persona nueva.</returns>
+        /// <exception cref="IntentosAgotadosException">
+        /// Se usaron 3 intentos con DNI o email ya registrados: se avisa
+        /// y el flujo vuelve al menú principal.
+        /// </exception>
+        private static PersonaDatos SolicitarPersonaUnica()
+        {
+            for (int intento = 1; intento <= ValidadorConsola.MaximoIntentos; intento++)
+            {
+                string dni = ValidadorConsola.LeerDni("DNI: ");
+
+                if (ExisteDni(dni))
+                {
+                    Console.WriteLine(
+                        "Ya existe una persona registrada con ese DNI." +
+                        " (intento " +
+                        intento +
+                        " de " +
+                        ValidadorConsola.MaximoIntentos +
+                        ")");
+                    continue;
+                }
+
+                string email = ValidadorConsola.LeerEmail("Email: ");
+
+                if (ExisteEmail(email))
+                {
+                    Console.WriteLine(
+                        "Ya existe una persona registrada con ese email." +
+                        " (intento " +
+                        intento +
+                        " de " +
+                        ValidadorConsola.MaximoIntentos +
+                        ")");
+                    continue;
+                }
+
+                string nombre = ValidadorConsola.LeerNombre(
+                    "Nombre y apellido: ");
+
+                return new PersonaDatos(dni, email, nombre);
+            }
+
+            throw new IntentosAgotadosException();
+        }
+
+        /// <summary>
+        /// Flujo de opción 1: registra un nuevo competidor. Primero crea
+        /// la PARTE COMÚN de la persona (DNI, email y nombre en un
+        /// <see cref="PersonaDatos"/> aparte, con verificación de
+        /// duplicados) y luego completa los campos propios del rol
+        /// competencia.
         /// </summary>
         private static void RegistrarCompetidor()
         {
             Console.WriteLine("=== REGISTRO DE COMPETIDOR ===");
 
-            string dni = ValidadorConsola.LeerDni("DNI: ");
+            // Parte común (competidor, mentor y jurado comparten esto).
+            PersonaDatos datosPersona = SolicitarPersonaUnica();
 
-            if (ExisteDni(dni))
-            {
-                Console.WriteLine(
-                    "Ya existe una persona registrada con ese DNI.");
-                return;
-            }
-
-            string email = ValidadorConsola.LeerEmail("Email: ");
-
-            if (ExisteEmail(email))
-            {
-                Console.WriteLine(
-                    "Ya existe una persona registrada con ese email.");
-                return;
-            }
-
+            // Campos específicos del rol: competencia.
             Competidor competidor = new Competidor
             {
+                Persona = datosPersona,
                 IdInscripcion = ObtenerIdCompetidor(),
-                Dni = dni,
-                Nombre = ValidadorConsola.LeerNombre(
-                    "Nombre y apellido: "),
-                Email = email,
                 Telefono = ValidadorConsola.LeerTelefono(
                     "Teléfono: "),
                 ProvinciaPais = ValidadorConsola.LeerTextoSinNumeros(
@@ -283,46 +313,30 @@ namespace Hackathon2026
         }
 
         /// <summary>
-        /// Flujo de opción 2: registra un mentor o un jurado. Verifica
-        /// DNI/email únicos, pide tipo, experiencia y categoría, y agrega
-        /// el nuevo MentorJurado a la lista en memoria.
+        /// Flujo de opción 2: registra un mentor o un jurado. Primero crea
+        /// la PARTE COMÚN de la persona (<see cref="PersonaDatos"/>, con
+        /// verificación de duplicados); luego la pide el tipo y los datos
+        /// de experiencia. incluir categorías:
+        /// la selección de categoría SÓLO se muestra para mentores; los
+        /// jurados quedan sin categoría porque evalúan proyectos de
+        /// todas las categorías.
         /// </summary>
         private static void RegistrarMentor()
         {
             Console.WriteLine("=== REGISTRO DE MENTOR/JURADO ===");
 
-            string dni = ValidadorConsola.LeerDni("DNI: ");
-
-            if (ExisteDni(dni))
-            {
-                Console.WriteLine(
-                    "Ya existe una persona registrada con ese DNI.");
-                return;
-            }
+            // Parte común (competidor, mentor y jurado comparten esto).
+            PersonaDatos datosPersona = SolicitarPersonaUnica();
 
             int tipoSeleccionado = ValidadorConsola.LeerEntero(
                 "Tipo (1 - Mentor, 2 - Jurado): ",
                 1,
                 2);
 
-            string email = ValidadorConsola.LeerEmail("Email: ");
-
-            if (ExisteEmail(email))
-            {
-                Console.WriteLine(
-                    "Ya existe una persona registrada con ese email.");
-                return;
-            }
-
-            // FIX: también los jurados tienen categoría asignada, para poder
-            // limitar sobre qué proyectos pueden evaluar.
             MentorJurado mentor = new MentorJurado
             {
+                Persona = datosPersona,
                 IdInscripcion = ObtenerIdMentorJurado(),
-                Dni = dni,
-                Nombre = ValidadorConsola.LeerNombre(
-                    "Nombre y apellido: "),
-                Email = email,
                 Telefono = ValidadorConsola.LeerTelefono(
                     "Teléfono: "),
                 ProvinciaPais = ValidadorConsola.LeerTexto(
@@ -337,7 +351,12 @@ namespace Hackathon2026
                     50),
                 Institucion = ValidadorConsola.LeerTexto(
                     "Institución: "),
-                CategoriaAsignada = ValidadorConsola.LeerCategoria()
+                // Regla: el menú de categorías sólo se muestra para
+                // mentores. Un jurado no tiene categoría asignada: es
+                // válido para todos los proyectos.
+                CategoriaAsignada = tipoSeleccionado == 1
+                    ? ValidadorConsola.LeerCategoria()
+                    : (CategoriaHackathon?)null
             };
 
             mentores.Add(mentor);
@@ -505,10 +524,12 @@ namespace Hackathon2026
             {
                 foreach (MentorJurado mentor in mentores)
                 {
+                    // Los jurados no tienen categoría asignada: evalúan
+                    // proyectos de todas las categorías.
                     string categoria = mentor.CategoriaAsignada.HasValue
                         ? CategoriaHelper.Nombre(
                             mentor.CategoriaAsignada.Value)
-                        : "No aplica";
+                        : "Todas";
 
                     Console.WriteLine(
                         "Nombre: " +
@@ -635,12 +656,13 @@ namespace Hackathon2026
 
         /// <summary>
         /// Flujo de opción 6: un mentor o un jurado (identificado por DNI)
-        /// evalúa un proyecto de su categoría. Cualquier mentor o jurado
-        /// puede evaluar los proyectos de SU categoría, pero un mentor no
-        /// puede evaluar el proyecto del equipo que acompaña (sólo los de
-        /// otros equipos). Toma las tres notas (0-10), las registra en el
-        /// proyecto (que recalcula promedios) y suma la evaluación al
-        /// evaluador.
+        /// evalúa proyectos. Reglas:
+        /// - Jurado: evalúa TODOS los proyectos que quiera (todas las
+        ///   categorías; no tiene categoría asignada).
+        /// - Mentor: sólo proyectos de su categoría y NO el proyecto del
+        ///   equipo que acompaña (sólo los de otros equipos).
+        /// Toma las tres notas (0-10), las registra en el proyecto (que
+        /// recalcula promedios) y suma la evaluación al evaluador.
         /// </summary>
         private static void Evaluar()
         {
@@ -667,49 +689,79 @@ namespace Hackathon2026
                 return;
             }
 
-            // Regla: sólo puede actuar dentro de su categoría.
-            if (!evaluador.CategoriaAsignada.HasValue)
+            bool esJurado =
+                evaluador.Tipo == TipoParticipante.Jurado;
+
+            // Reglas de quién puede evaluar qué:
+            // - Jurado: todos los proyectos que quiera (sin límite por
+            //   categoría; no tiene categoría asignada).
+            // - Mentor: proyectos de SU categoría, excluyendo el del
+            //   equipo que acompaña (sólo los de otros equipos).
+            List<Competidor> elegibles;
+
+            if (esJurado)
             {
+                elegibles =
+                    competidores
+                        .Where(c => c.ProyectoAsignado != null)
+                        .ToList();
+
                 Console.WriteLine(
-                    "El evaluador no tiene Categoría asignada.");
-
-                return;
+                    "\nTodos los proyectos inscriptos" +
+                    " (jurado: no está limitado por categoría):");
             }
-
-            List<Competidor> elegibles =
-                competidores
-                    .Where(c =>
-                        c.ProyectoAsignado != null &&
-                        c.ProyectoAsignado.Categoria ==
-                            evaluador.CategoriaAsignada.Value)
-                    .ToList();
-
-            // Un mentor no evalúa el proyecto del equipo que Acompaña:
-            // sólo proyectos de otros equipos.
-            if (evaluador.Tipo == TipoParticipante.Mentor)
+            else
             {
+                // (Mentor) Regla: sólo puede actuar dentro de su categoría.
+                if (!evaluador.CategoriaAsignada.HasValue)
+                {
+                    Console.WriteLine(
+                        "El mentor no tiene categoría asignada.");
+
+                    return;
+                }
+
+                elegibles =
+                    competidores
+                        .Where(c =>
+                            c.ProyectoAsignado != null &&
+                            c.ProyectoAsignado.Categoria ==
+                                evaluador.CategoriaAsignada.Value)
+                        .ToList();
+
+                // Un mentor no evalúa el proyecto del equipo que acompaña:
+                // sólo proyectos de otros equipos.
                 elegibles =
                     elegibles
                         .Where(c => c.MentorAsignado != evaluador)
                         .ToList();
+
+                Console.WriteLine(
+                    "\nProyectos de la categoría " +
+                        CategoriaHelper.Nombre(
+                            evaluador.CategoriaAsignada.Value) +
+                        " (excluye los de su propio equipo):");
             }
 
             if (elegibles.Count == 0)
             {
-                Console.WriteLine(
-                    "No hay proyectos aptos para evaluar en la categoría " +
-                    CategoriaHelper.Nombre(
-                        evaluador.CategoriaAsignada.Value) +
-                    ".");
+                if (esJurado)
+                {
+                    Console.WriteLine(
+                        "No hay proyectos inscriptos todavía.");
+                }
+                else
+                {
+                    Console.WriteLine(
+                        "No hay proyectos elegibles para evaluar" +
+                        " en la categoría " +
+                        CategoriaHelper.Nombre(
+                            evaluador.CategoriaAsignada.Value) +
+                        " (distinto de sus propios equipos).");
+                }
 
                 return;
             }
-
-            Console.WriteLine(
-                "\nProyectos de la categoría " +
-                CategoriaHelper.Nombre(
-                    evaluador.CategoriaAsignada.Value) +
-                ":");
 
             for (int i = 0; i < elegibles.Count; i++)
             {
@@ -955,10 +1007,11 @@ namespace Hackathon2026
             {
                 mentores.Add(new MentorJurado
                 {
+                    Persona = new PersonaDatos(
+                        dto.Dni,
+                        dto.Email,
+                        dto.Nombre),
                     IdInscripcion = dto.IdInscripcion,
-                    Dni = dto.Dni,
-                    Nombre = dto.Nombre,
-                    Email = dto.Email,
                     Telefono = dto.Telefono,
                     ProvinciaPais = dto.ProvinciaPais,
                     Rol = dto.Rol,
@@ -975,10 +1028,11 @@ namespace Hackathon2026
             {
                 competidores.Add(new Competidor
                 {
+                    Persona = new PersonaDatos(
+                        dto.Dni,
+                        dto.Email,
+                        dto.Nombre),
                     IdInscripcion = dto.IdInscripcion,
-                    Dni = dto.Dni,
-                    Nombre = dto.Nombre,
-                    Email = dto.Email,
                     Telefono = dto.Telefono,
                     ProvinciaPais = dto.ProvinciaPais,
                     Rol = dto.Rol,
